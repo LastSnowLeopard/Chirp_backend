@@ -5,6 +5,57 @@ const dbpool=pool.promise();
 // let   pKey = "96udnagramu";
 
 
+exports.Login_get =async function (datas) {
+    const {email,password } = datas;
+   
+    try {
+   
+        var sql1 = `select * from user where email = '${email}' `;
+        const [data] = await dbpool.query(sql1);  
+   
+       if(data.length==0)
+       {
+         return "Record Not Found"
+       } 
+       else {
+           const match = await bcrypt.compare(password, data[0].password);
+            if(!match){ 
+             
+                return {message:"Not Login Successfully Wrong Password",data:{user_id:""},status:0}
+        }
+            else{ 
+               const accessToken = jwt.sign({id : data[0].id},"mycustomersecretkey",{ expiresIn: '58m' } ); 
+               const user_id = data[0].id ;  
+               const sql1 = `update user SET jwt_token ='${accessToken}' where id = '${user_id}' `;
+   
+               // console.log(sql1)
+               const [fields] = await dbpool.query(sql1);  
+               if(fields.affectedRows>=1){
+               
+   
+   
+               return {message:"Login Successfully",data:{
+                "message" : "Login Successfully",
+               "Token " : accessToken,
+               " user_id " : data[0].id,
+               "user_name" : data[0].full_name
+               },status:1}
+             
+                }
+                else
+                {
+                  return {message:"Not Login Successfully",data:{user_id:""},status:0}
+
+                }
+                }
+            
+       }
+   }
+   catch (err) {
+       return err+"System Error";
+   
+   }
+   };
 
 exports.Logout_get = async function (data) {
    const {user_id,email} = data;
