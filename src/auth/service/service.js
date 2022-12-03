@@ -70,8 +70,8 @@ exports.registration_user = async function (data) {
                 const [data1,res] = await dbpool.query(sql1);
                 if(data1.length==0){
                     console.log("data",data)
-                    var sql = `insert into user (full_name, email, address, password, account_type, notification_status,otp,updated_at)
-                     values ('${data.full_name}','${data.email}','${data.address}','${hash}','${data.account_type}','${data.notification}','${data.otp}','${data.updated_at}') `;
+                    var sql = `insert into user (full_name, email, address, password, account_type, notification_status,otp)
+                     values ('${data.full_name}','${data.email}','${data.address}','${hash}','${data.account_type}','${data.notification}','${data.otp}') `;
                     const [fields] = await dbpool.query(sql)
                     console.log(fields.insertId);
                     if (fields.affectedRows >= 1) {
@@ -126,8 +126,8 @@ exports.add_creator_data = async function (data) {
     const { email} = data
     try {
         
-        var sql = `insert into creator (buiness_email, profile_image, cover_image, user_id, contact_number, updated_at)
-            values ('${data.email}','${data.profile_image}','${data.cover_image}','${data.user_id}','${data.contact_number}','${data.updated_at}') `;
+        var sql = `insert into creator (buiness_email, profile_image, cover_image, user_id, contact_number)
+            values ('${data.email}','${data.profile_image}','${data.cover_image}','${data.user_id}','${data.contact_number}'') `;
         const [fields] = await dbpool.query(sql)
         console.log(fields.insertId);
         if (fields.affectedRows >= 1) {
