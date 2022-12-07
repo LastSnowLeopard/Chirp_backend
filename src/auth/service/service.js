@@ -7,7 +7,6 @@ const dbpool=pool.promise();
 
 exports.Login_get =async function (datas) {
     const {email,password } = datas;
-   
     try {
    
         var sql1 = `select * from user where email = '${email}' `;
