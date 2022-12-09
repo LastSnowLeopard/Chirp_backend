@@ -228,10 +228,13 @@ exports.resetPasswordService = async function (data) {
      console.log(fields,sql)
      try{
      if(fields.affectedRows>=1){
-         return "password Updated Successfully";
+        return {message:"password Updated Successfully",data:{},status:1}
+
+         return ;
      }
      else {
-          return "Password not updated"
+        return {message:"password Updated Successfully",data:{},status:0}
+
      }
  }catch(err)
  {
