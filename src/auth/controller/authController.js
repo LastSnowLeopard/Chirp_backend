@@ -184,7 +184,7 @@ exports.reset_password = async (req, res) => {
 try {
     const respond = await authService.resetPasswordService({email,user_id,password});
     if(respond.status=="1"){
-        otp="YOUR OTP CODE IS :"+otp;
+        // otp="YOUR OTP CODE IS :"+otp;
             // let mailResponse = await mail.sendMail(otp, email);
             res.status(200).send(respond)
     }else{

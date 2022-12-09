@@ -230,7 +230,6 @@ exports.resetPasswordService = async function (data) {
      if(fields.affectedRows>=1){
         return {message:"password Updated Successfully",data:{},status:1}
 
-         return ;
      }
      else {
         return {message:"password Updated Successfully",data:{},status:0}
