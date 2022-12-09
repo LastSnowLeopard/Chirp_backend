@@ -222,8 +222,10 @@ exports.resetPasswordService = async function (data) {
         let pSalt = await bcrypt.genSalt(10);
     let hash  = await bcrypt.hash(data.password,pSalt);
 
-     const sql =  `update user SET password ='${hash}' where id = '${user_id}' or  email='${email}'`;
+     const sql =  `update user SET password ='${hash}' where id = '${user_id}'`;
+
      const [fields] = await dbpool.query(sql);
+     console.log(fields,sql)
      try{
      if(fields.affectedRows>=1){
          return "password Updated Successfully";
