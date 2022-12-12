@@ -236,9 +236,47 @@ exports.get_creator_list = async (req, res) => {
         console.log(e);
     }
 
+}
 
 
+exports.add_instant_user = async (req, res) => {
 
+    let full_name=req.body.full_name;
+    let email=req.body.email;
+    let address="";
+    let password="";
+    let account_type="user";
+    let notification="on";
+    let otp="";
+    let created_at=new Date().toISOString();
+    let updated_at=new Date().toISOString();
+
+    var chars = "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var passwordLength = 12;
+
+    for (var i = 0; i <= passwordLength; i++) {
+        var randomNumber = Math.floor(Math.random() * chars.length);
+        password += chars.substring(randomNumber, randomNumber +1);
+       }
+ 
+    let user_registration_data={
+        full_name,email,address,password,account_type,notification,created_at,otp,updated_at
+    }
+    
+    try {
+        const respond = await authService.registration_user(user_registration_data);
+       
+        if(respond.status==1){
+            message="hello"+full_name+"Your Account has been created. your user_name is :" + email + "Password is:"+password;
+            let mailResponse = await mail.sendMail(message, email);
+        }
+
+        
+        res.status(200).send({ respond})     
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({message:error.message});
+    }  
 }
 
 

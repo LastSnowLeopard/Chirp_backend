@@ -19,6 +19,11 @@ route.post('/reset-password',authController.reset_password);
 route.post('/get_user_list',authController.get_user_list)
 route.post('/get_creator_list',authController.get_creator_list)
 
+route.post('/add_instant_user',authController.add_instant_user)
+
+
+
+
 route.post('/updateUser',authController.updateuser)
 
 // route.post('/deleteUser',authController.deleteuser)
