@@ -31,23 +31,21 @@ exports.Login_get =async function (datas) {
                const [fields] = await dbpool.query(sql1);  
                if(fields.affectedRows>=1){
                
-   
-   
                return {message:"Login Successfully",data:{
                 "message" : "Login Successfully",
-               "Token " : accessToken,
-               " user_id " : data[0].id,
-               "user_name" : data[0].full_name
+               "Token" : accessToken,
+               "user_id" : data[0].id,
+               "user_name" : data[0].full_name,
+               "address" : data[0].address,
+               "email" : data[0].email,
                },status:1}
-             
                 }
                 else
                 {
                   return {message:"Not Login Successfully",data:{user_id:""},status:0}
 
                 }
-                }
-            
+                }    
        }
    }
    catch (err) {
@@ -55,6 +53,36 @@ exports.Login_get =async function (datas) {
    
    }
    };
+   
+   exports.getBusinessData=async function (creator) {
+    console.log(creator.data)
+    let id=creator.data.user_id;
+ 
+    const sql =  `SELECT * FROM user
+    INNER JOIN creator on user.id=creator.user_id WHERE user.id=${id}`;
+
+    try{
+    const [data] = await dbpool.query(sql);
+    creator.data.buiness_email=data[0].buiness_email
+    creator.data.profile_image=data[0].profile_image
+    creator.data.cover_image=data[0].cover_image
+    creator.data.contact_number=data[0].contact_number
+    creator.data.no_of_followers=data[0].no_of_followers
+
+    return creator;
+    }catch(e){
+        console.log(e)
+        return creator;
+    }
+
+
+
+
+
+
+   }
+
+
 
 exports.Logout_get = async function (data) {
    const {user_id,email} = data;
@@ -177,7 +205,7 @@ exports.add_creator_data = async function (data) {
     try {
         
         var sql = `insert into creator (buiness_email, profile_image, cover_image, user_id, contact_number)
-            values ('${data.email}','${data.profile_image}','${data.cover_image}','${data.user_id}','${data.contact_number}'') `;
+            values ('${data.email}','${data.profile_image}','${data.cover_image}','${data.user_id}','${data.contact_number}') `;
         const [fields] = await dbpool.query(sql)
         console.log(fields.insertId);
         if (fields.affectedRows >= 1) {
@@ -240,3 +268,45 @@ exports.resetPasswordService = async function (data) {
      return "System Error" 
  }
  };
+
+exports.get_user_listService = async function (data) {
+
+    try{
+        var sql1 = `select id as user_id,full_name as name from user where account_type='user'`;
+                    const [data1,res] = await dbpool.query(sql1);
+                    if(data1.length>0){
+                        return {message:"user list",data:{list:data1},status:1}
+                    }else{
+                        return {message:"No data fetched",data:{list:""},status:0}
+                    }
+    
+    
+    }catch (e){
+        return e+"System Error";
+    
+    }
+    
+    }
+
+
+    
+
+    exports.get_creator_listService = async function (data) {
+
+        try{
+            var sql1 = `select id as user_id,full_name as name from user where account_type='creator'`;
+                        const [data1,res] = await dbpool.query(sql1);
+                        if(data1.length>0){
+                            return {message:"creator list",data:{list:data1},status:1}
+                        }else{
+                            return {message:"No data fetched",data:{list:""},status:0}
+                        }
+        
+        
+        }catch (e){
+            return e+"System Error";
+        
+        }
+        
+        }
+    

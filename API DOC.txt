@@ -1,0 +1,102 @@
+User Registration:
+http://165.227.252.102:5306/api/auth/user-registration
+Data in body:
+{"full_name":"syed haseeb","email":"syedsd@gmail.com","address":"18hc8765","password":"1234","account_type":"user","notification":"on"}
+response:
+{
+    "respond": {
+        "message": "User Registered Successfully",
+        "data": {
+            "user_id": 11
+        },
+        "status": 1
+    }
+}
+
+------------------------------------------------------------
+
+Creator Registration:
+http://165.227.252.102:5306/api/auth/creator-registration
+
+data in body:
+
+{"full_name":"syed haseeb","business_email":"syyed1d@gmail.com","address":"18hc8765","password":"1234","account_type":"user","notification":"on","profile_image":"asdsdsdsdf","cover_image":"dsdsds","contact_number":"135489"}
+
+response:
+{
+    "respond": {
+        "message": "User Registered Successfully",
+        "data": {
+            "user_id": 12
+        },
+        "status": 1
+    }
+}
+
+------------------------------------------------------------
+
+Verify OTP:
+http://localhost:5300/api/auth/verify-otp
+Body:
+{
+    "otp":"8060",
+    "user_id":"7"
+
+}
+
+
+------------------------------------------------------------
+LOGIN:
+http://165.227.252.102:5306/api/auth/login
+
+BODY:
+{
+    "email":"syedd@gmail.com",
+    "password":"1234",
+     "user_type":"user"
+}
+
+response:
+{
+    "message": {
+        "message": "Login Successfully",
+        "data": {
+            "message": "Login Successfully",
+            "Token ": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwiaWF0IjoxNjcwMTAxODkxLCJleHAiOjE2NzAxMDUzNzF9.BYBW0mcPf4sOs51WRrDkBkllyPTqfq4O-YyLGeqfC8k",
+            " user_id ": 8,
+            "user_name": "syed haseeb"
+        },
+        "status": 1
+    }
+}
+
+------------------------------------------------------------
+Forget password:
+http://165.227.252.102:5306/api/auth/forget-password
+
+Body:
+{
+    "email":"syedd@gmail.com"
+}
+
+Response:
+{
+    "message": "your account doestnot exist",
+    "data": {
+        "user_id": "",
+        "email": ""
+    },
+    "status": 0
+}
+
+------------------------------------------------------------
+Reset Password:
+http://165.227.252.102:5306/api/auth/reset-password
+Body:
+{
+    "email":"syedd@gmail.com",
+    "password":"123467",
+    "user_id":"7"
+}
+
+response;

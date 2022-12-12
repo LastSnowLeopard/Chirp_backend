@@ -1,7 +1,7 @@
 
 const authService=require('../service/service');
 
-  
+
 
 
 const mail = require('../../../helper/mail')
@@ -36,7 +36,6 @@ exports.userRegistration = async (req, res) => {
         res.status(400).send({message:error.message});
     }  
 }
-
 
 
 exports.updateuser = async (req, res) => {
@@ -91,7 +90,20 @@ exports.verifyOTP = async (req, res) => {
 
 exports.getLogin = async (req, res) => {
     try {
-        const respond = await authService.Login_get(req.body);
+        let respond = await authService.Login_get(req.body);
+
+        if(respond.status==1){
+            if(req.body.user_type=='creator'){
+                 respond = await authService.getBusinessData(respond);
+
+
+            }
+        }
+
+
+
+
+
         res.status(200).send({message: respond})
          
     } catch (error) {
@@ -100,17 +112,16 @@ exports.getLogin = async (req, res) => {
      
 }
 
-
 exports.CreatorRegistration= async (req, res) => {
-
+    console.log(req.body);
     let full_name=req.body.full_name;
     let email=req.body.business_email;
     let address=req.body.address;
     let password=req.body.password;
     let account_type="creator";
 
-    let profile_image=req.body.profile_image;
-    let cover_image=req.body.cover_image;
+    let profile_image = req.body.profile_image || "";
+    let cover_image = req.body.cover_image || '';
     let contact_number=req.body.contact_number;
     let notification=req.body.notification;
     let created_at=new Date().toISOString();
@@ -197,25 +208,38 @@ try {
 
 }
 
-// const updateuser = async (req, res) => {
 
-//     try {
-//         const respond = await authService.update_user(req.body);
-//         res.status(200).send({message : respond})
-        
-//     } catch (error) {
-//             res.status(400).send({message:error.message});       
-//     }
-// }
-
-//  const deleteuser = async (req, res) => {
-
-//     try {
+exports.get_user_list = async (req, res) => {
+    try {
+        const respond = await authService.get_user_listService();
+        if(respond.status=="1"){
+                res.status(200).send(respond)
+        }else{
+            res.status(200).send(respond)
+        }
     
-//         const respond = await authService.delete_user(req.body);
-//         res.status(200).send({message : respond})    
-//     } catch (error) {
-//         res.status(400).send({message:error.message});
-//     }
-//  }
+    }catch(e){
+        console.log(e);
+    }
+}
+
+exports.get_creator_list = async (req, res) => {
+    try {
+        const respond = await authService.get_creator_listService();
+        if(respond.status=="1"){
+                res.status(200).send(respond)
+        }else{
+            res.status(200).send(respond)
+        }
+    
+    }catch(e){
+        console.log(e);
+    }
+
+
+
+
+}
+
+
 
