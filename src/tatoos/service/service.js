@@ -76,3 +76,40 @@ exports.getTaatoosService = async function (data) {
         return err+"System Error";
     }
 };
+
+
+
+
+
+
+
+
+
+
+exports.getColorCodeService = async function (data) {
+  
+	
+    try {
+        var sql = `select id,color_code from color_tone`;
+       console.log(sql);
+        const [fields] = await dbpool.query(sql)
+        console.log(fields);
+
+        if (fields.length >= 0) {
+
+       
+
+            return {message:"data fetcghed",data:fields,status:1}
+                }
+            else
+        {
+            return  {message:"not data fected",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+

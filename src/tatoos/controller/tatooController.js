@@ -54,7 +54,15 @@ exports.getTaatoos = async (req, res) => {
     }catch(err){
         res.status(400).send({message:error.message});
     }
+}
 
 
+exports.getColorCode = async (req, res) => {
 
+    try{
+        const respond = await authService.getColorCodeService();
+        res.status(200).send({ respond})     
+    }catch(err){
+        res.status(400).send({message:error.message});
+    }
 }
