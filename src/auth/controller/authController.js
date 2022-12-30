@@ -37,38 +37,53 @@ exports.userRegistration = async (req, res) => {
     }  
 }
 
-
-exports.updateuser = async (req, res) => {
-
-    let full_name=req.body.full_name;
-    let email=req.body.email;
-    let address=req.body.address;
-    let password=req.body.password;
-    let account_type="user";
-    let notification=req.body.notification;
-    let created_at=new Date().toISOString();
-    let updated_at=new Date().toISOString();
-    var otp = Math.floor(1000 + Math.random() * 9000);
+exports.updateCreator = async (req, res) => {
  
-    let user_registration_data={
-        full_name,email,address,password,account_type,notification,created_at,otp,updated_at
+    let full_name=req.body.full_name;
+    let business_name=req.body.business_name;
+    let contact_number=req.body.contact_number;
+    let address=req.body.address;
+    let profile_image = req.body.profile_image || "";
+    let cover_image = req.body.cover_image || '';
+    let creator_id=req.body.creator_id;
+
+    let creator_registration_data={
+        full_name,business_name,contact_number,address,profile_image,cover_image,creator_id
     }
     
     try {
-        const respond = await authService.registration_user(user_registration_data);
+        const respond = await authService.updateCreatorService(creator_registration_data);
        
-        if(respond.status==1){
-            otp="YOUR OTP CODE IS :"+otp;
-            let mailResponse = await mail.sendMail(otp, email);
-        }
-
-        
         res.status(200).send({ respond})     
     } catch (error) {
         console.log(error)
         res.status(400).send({message:error.message});
     }  
 }
+
+
+exports.updateUser = async (req, res) => {
+ 
+    let full_name=req.body.full_name;
+    let address=req.body.address;
+    let user_id=req.body.user_id;
+
+    let data={
+        full_name,address,user_id
+    }
+    
+    try {
+        const respond = await authService.update_user(data);
+       
+        res.status(200).send({ respond})     
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({message:error.message});
+    }  
+}
+
+
+
 
 exports.verifyOTP = async (req, res) => {
     const otp = req.body.otp;
@@ -164,6 +179,8 @@ exports.logOut = async (req, res) => {
     }
            
 }
+
+
 
 
 exports.ForgetPassword = async (req, res) => {
@@ -281,3 +298,33 @@ exports.add_instant_user = async (req, res) => {
 
 
 
+exports.notification_switch = async (req, res) => {
+    const user_id = req.body.user_id;
+    const notification_status = req.body.notification_status;
+    try {
+        const respond = await authService.notification_switch_service({user_id,notification_status});
+        res.status(200).send(respond);   
+        
+    }catch(e){
+        res.status(500).send({message:e.message})  
+
+    }
+           
+}
+
+
+
+
+exports.getnotifications_by_id = async (req, res) => {
+    const id = req.body.id;
+ 
+    try {
+        const respond = await authService.getNotificationService({id});
+        res.status(200).send(respond);   
+        
+    }catch(e){
+        res.status(500).send({message:e.message})  
+
+    }
+           
+}

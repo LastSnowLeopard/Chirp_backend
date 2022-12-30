@@ -6,10 +6,10 @@ const dbpool=pool.promise();
 
 
 exports.Login_get =async function (datas) {
-    const {email,password } = datas;
+    const {email,password,user_type } = datas;
     try {
    
-        var sql1 = `select * from user where email = '${email}' `;
+        var sql1 = `select * from user where email = '${email}' AND account_type='${user_type}'`;
         const [data] = await dbpool.query(sql1);  
    
        if(data.length==0)
@@ -32,12 +32,13 @@ exports.Login_get =async function (datas) {
                if(fields.affectedRows>=1){
                
                return {message:"Login Successfully",data:{
-                "message" : "Login Successfully",
+               "message" : "Login Successfully",
                "Token" : accessToken,
                "user_id" : data[0].id,
                "user_name" : data[0].full_name,
                "address" : data[0].address,
                "email" : data[0].email,
+               "notification_status":data[0].notification_status
                },status:1}
                 }
                 else
@@ -75,13 +76,27 @@ exports.Login_get =async function (datas) {
         return creator;
     }
 
-
-
-
-
-
    }
 
+
+
+   
+   exports.getNotificationService=async function (data) {
+ 
+ 
+    const sql =  `SELECT * FROM user where id=${data.id}`;
+
+    try{
+    const [data] = await dbpool.query(sql);
+    if(data.length>=0)
+    return {message:"data fetched",data:{notification_status:data[0].notification_status},status:1}
+    else
+    return {message:"data not fetched",data:{},status:0}
+    }catch(e){
+        console.log(e)
+        return e;
+    }
+   }
 
 
 exports.Logout_get = async function (data) {
@@ -90,10 +105,13 @@ exports.Logout_get = async function (data) {
     const [fields] = await dbpool.query(sql);
     try{
     if(fields.affectedRows>=1){
-        return "Logout Successfully"
+        return {message:"Logout Successfully",data:{user_id:""},status:1}
+
     }
     else {
-         return "Not Logout Successfully"
+         return {message:"Not Logout Successfully",data:{user_id:""},status:0}
+
+         
     }
 }catch(err)
 {
@@ -101,21 +119,86 @@ exports.Logout_get = async function (data) {
 }
 };
 
-exports.update_user = async function (data) {
-    const {user_id,password,email,phone_no} = data;
-     const sql =  `update users SET password = '${password}' ,email = '${email}' , phone_no = '${phone_no}' where user_id = '${user_id}' `;
+
+exports.notification_switch_service = async function (data) {
+    const {user_id,notification_status} = data;
+     const sql =  `update user SET notification_status ='${notification_status}' where id = '${user_id}'`;
      const [fields] = await dbpool.query(sql);
      try{
-     if(fields.affectedRows>=1)
-     {
-         return "Update Successfully"
+        console.log(sql)
+     if(fields.affectedRows>=1){
+         return {message:"updated Successfully",data:{user_id:""},status:1} 
      }
-     else 
-     {
-          return "Not Update Successfully"
+     else {
+          return {message:"Not Updated Successfully",data:{user_id:""},status:0}
      }
  }catch(err)
  {
+     return "System Error" 
+ }
+ };
+
+
+ 
+
+
+
+ exports.updateCreatorService = async function (data) {
+
+    const {full_name,business_name,contact_number,address,profile_image,cover_image,creator_id} = data;
+        let pi=``;
+        let ci=``;
+
+        if(profile_image!=null && profile_image!=undefined)
+                pi=` profile_image='${profile_image}',`;
+        if(cover_image!=null && cover_image!=undefined)
+                ci=`cover_image='${cover_image}',`;
+            
+     try{
+     const sql = `UPDATE user SET full_name='${full_name}',address='${address}' WHERE id='${creator_id}'`
+     var [fields] = await dbpool.query(sql);
+
+    
+     if(fields.affectedRows>=1){                    
+        const sql1 = `UPDATE creator SET ${pi} ${ci} business_name='${business_name}',contact_number='${contact_number}' WHERE user_id='${creator_id}'`
+        console.log(sql1);
+        var [fields] = await dbpool.query(sql1);
+        console.log(fields)
+        if(fields.affectedRows>=1){  
+            return {message:" Updated Successfully",status:1}
+        }
+     }
+     else {
+          return {message:" Not Updated Successfully",status:1}
+     }
+ }catch(err)
+ {
+    console.log(err)
+     return "System Error" 
+ }
+ };
+
+
+
+
+
+exports.update_user = async function (data) {
+    const {full_name,address,user_id} = data;
+    const sql = `UPDATE user SET full_name='${full_name}',address='${address}' WHERE id=${user_id}`
+    console.log(sql)
+    var [fields] = await dbpool.query(sql);
+     try{
+     if(fields.affectedRows>=1)
+     {
+        return {message:" Updated Successfully",status:1}
+     }
+     else 
+     {
+        return {message:" Not Updated Successfully",status:1}
+    }
+ }catch(err)
+ {
+    console.log(err)
      return "System Error" 
  }
  };

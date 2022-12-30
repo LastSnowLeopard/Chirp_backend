@@ -56,6 +56,62 @@ exports.getTaatoos = async (req, res) => {
     }
 }
 
+exports.getTaatoosById = async (req, res) => {
+
+    let data={
+        id:req.body.id,
+        page:req.body.page,
+        pageSize:req.body.pageSize,
+        added_by:req.body.user_type
+    };
+
+    try{
+        const respond = await authService.getTaatoosByIDService(data);
+        res.status(200).send({ respond})     
+    }catch(err){
+        res.status(400).send({message:error.message});
+    }
+}
+
+exports.getTaggedTaatoosById = async (req, res) => {
+
+    let data={
+        id:req.body.id,
+        page:req.body.page,
+        pageSize:req.body.pageSize,
+        added_by:req.body.user_type
+    };
+
+    try{
+        const respond = await authService.getTagsTaatoosByIDService(data);
+        res.status(200).send({ respond})     
+    }catch(err){
+        res.status(400).send({message:error.message});
+    }
+}
+
+
+
+
+exports.likeTaatoos = async (req, res) => {
+    let taatoo_id=req.body.taatoo_id;
+
+try {
+    const respond = await authService.likeTaatoos_service(taatoo_id);
+    if(respond.status=="1"){
+
+            res.status(200).send(respond)
+    }else{
+        res.status(200).send(respond)
+    }
+
+}catch(e){
+    console.log(e);
+}
+
+}
+
+
 
 exports.getColorCode = async (req, res) => {
 
