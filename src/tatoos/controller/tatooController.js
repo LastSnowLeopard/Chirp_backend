@@ -122,3 +122,38 @@ exports.getColorCode = async (req, res) => {
         res.status(400).send({message:error.message});
     }
 }
+
+
+exports.getstats = async (req, res) => {
+
+    try{
+        const respond = await authService.getstats();
+        res.status(200).send({ respond})     
+    }catch(err){
+        res.status(400).send({message:err.message});
+    }
+}
+
+exports.getUsers = async (req, res) => {
+    
+    try{
+        const respond = await authService.getUsersService(req.query.page,req.query.account_type);
+        res.status(200).send({ respond})     
+    }catch(err){
+        res.status(400).send({message:error.message});
+    }
+}
+
+
+
+exports.getCreator = async (req, res) => {
+
+    try{
+        const respond = await authService.getCreatorService(req.query.page,req.query.account_type);
+        res.status(200).send({ respond})     
+    }catch(err){
+        res.status(400).send({message:err.message});
+    }
+}
+
+

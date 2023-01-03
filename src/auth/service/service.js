@@ -81,22 +81,22 @@ exports.Login_get =async function (datas) {
 
 
    
-   exports.getNotificationService=async function (data) {
- 
- 
-    const sql =  `SELECT * FROM user where id=${data.id}`;
+exports.getNotificationService=async function (data) {
 
-    try{
-    const [data] = await dbpool.query(sql);
-    if(data.length>=0)
-    return {message:"data fetched",data:{notification_status:data[0].notification_status},status:1}
-    else
-    return {message:"data not fetched",data:{},status:0}
-    }catch(e){
-        console.log(e)
-        return e;
-    }
-   }
+
+const sql =  `SELECT * FROM user where id=${data.id}`;
+
+try{
+const [data] = await dbpool.query(sql);
+if(data.length>=0)
+return {message:"data fetched",data:{notification_status:data[0].notification_status},status:1}
+else
+return {message:"data not fetched",data:{},status:0}
+}catch(e){
+    console.log(e)
+    return e;
+}
+}
 
 
 exports.Logout_get = async function (data) {
@@ -138,8 +138,48 @@ exports.notification_switch_service = async function (data) {
  }
  };
 
+ 
+
+ exports.updateColorAdmin_service = async function (data) {
+    const {id,color_code,color_name,color_discription,color_in_use} = data;
+     const sql =  `update color_tone SET color_code='${color_code}',color_name='${color_name}',color_discription='${color_discription}',color_in_use='${color_in_use}' where id = '${id}'`;
+     console.log(sql)
+     const [fields] = await dbpool.query(sql);
+     try{
+        
+     if(fields.affectedRows>=1){
+         return {message:"updated Successfully",data:{user_id:""},status:1} 
+     }
+     else {
+          return {message:"Not Updated Successfully",data:{user_id:""},status:0}
+     }
+ }catch(err)
+ {   console.log(err)
+     return "System Error" 
+ }
+ };
+
 
  
+ exports.addColorAdmin_service = async function (data) {
+    const {id,color_code,color_name,color_discription,color_in_use} = data;
+     const sql =  `insert into color_tone (color_code,color_name,color_discription,color_in_use) values('${color_code}','${color_name}','${color_discription}','${color_in_use}')`;
+     console.log(sql)
+     const [fields] = await dbpool.query(sql);
+     try{
+        console.log(fields);
+     if(fields.affectedRows>=1){
+         return {message:"color inserted Successfully",data:{user_id:""},status:1} 
+     }
+     else {
+          return {message:"Not inserted Successfully",data:{user_id:""},status:0}
+     }
+ }catch(err)
+ {   console.log(err)
+     return "System Error" 
+ }
+ };
+
 
 
 
@@ -202,6 +242,55 @@ exports.update_user = async function (data) {
      return "System Error" 
  }
  };
+ exports.updateAdminuser = async function (data) {
+    const {full_name,address,user_id,account_status,notification} = data;
+    const sql = `UPDATE user SET full_name='${full_name}',address='${address}',account_status='${account_status}',notification_status='${notification}' WHERE id=${user_id}`
+    console.log(sql)
+    var [fields] = await dbpool.query(sql);
+     try{
+     if(fields.affectedRows>=1)
+     {
+        return {message:" Updated Successfully",status:1}
+     }
+     else 
+     {
+        return {message:" Not Updated Successfully",status:0}
+    }
+ }catch(err)
+ {
+    console.log(err)
+     return "System Error" 
+ }
+ };
+
+ exports.updateAdminCreator = async function (data) {
+    const {full_name,address,user_id,account_status,notification,business_name} = data;
+    const sql = `UPDATE user SET full_name='${full_name}',address='${address}',account_status='${account_status}',notification_status='${notification}' WHERE id=${user_id}`
+    var [fields] = await dbpool.query(sql);
+     try{
+     if(fields.affectedRows>=1)
+     {
+        const sql1 = `UPDATE creator SET business_name=${business_name}' WHERE user_id=${user_id}`
+        var [field] = await dbpool.query(sql1);
+
+
+
+        return {message:" Updated Successfully",status:1}
+     }
+     else 
+     {
+        return {message:" Not Updated Successfully",status:0}
+    }
+ }catch(err)
+ {
+    console.log(err)
+     return "System Error" 
+ }
+ };
+
+ 
+ 
+
 
  exports.delete_user = async function (data) {
     const {id} = data;

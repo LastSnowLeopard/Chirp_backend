@@ -42,9 +42,6 @@ exports.add_taatoo = async function (data) {
 
 
 
-
-
-
 exports.getTaatoosService = async function (data) {
     try {
         var sql = `select user.full_name,taatoos.* from taatoos 
@@ -58,9 +55,6 @@ exports.getTaatoosService = async function (data) {
 
          var sql1 = `select count(*) from taatoos where color_tone_id='${data.color_tone_id}'`;
         const [field] = await dbpool.query(sql1);
-        console.log("========",field)
-
-
             return {message:"data fetcghed",data:fields,total_page:Math.ceil(field[0]['count(*)']/data.pageSize),pageno:data.page,status:1}
                 }
             else
@@ -137,24 +131,16 @@ exports.getTagsTaatoosByIDService = async function (data) {
     }
 };
 
-
-
-
-
-
-
 exports.getColorCodeService = async function (data) {
   
 	
     try {
-        var sql = `select id,color_code from color_tone`;
+        var sql = `select id,color_code,color_name,color_discription,color_in_use from color_tone`;
        console.log(sql);
         const [fields] = await dbpool.query(sql)
-        console.log(fields);
+     
 
         if (fields.length >= 0) {
-
-       
 
             return {message:"data fetcghed",data:fields,status:1}
                 }
@@ -170,12 +156,102 @@ exports.getColorCodeService = async function (data) {
     }
 };
 
+exports.getstats = async function () {
+  
+	let data={
+        total_user:'',
+        total_creator:'',
+        total_tatoos:''
+    }
+    try {
+        var sql = `select count(*) as total_user from user where account_type='user'`;
+         console.log(sql);
+        var [fields] = await dbpool.query(sql)
+        console.log(fields[0].total_user);
+        data.total_user=fields[0].total_user;
+        var sql = `select count(*) as total_creator from user where account_type='creator'`;
+        console.log(sql);
+         [fields] = await dbpool.query(sql)
+        console.log(fields[0].total_creator);
+        data.total_creator=fields[0].total_creator;
+
+        var sql = `select count(*) as total_tattoos from taatoos `;
+        console.log(sql);
+         [fields] = await dbpool.query(sql)
+        console.log(fields[0].total_tattoos);
+        data.total_tatoos=fields[0].total_tattoos
+
+        if (data) {
+
+            return {message:"data fetched",data:data,status:1}
+                }
+            else
+        {
+            return  {message:"not data fected",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+
+exports.getUsersService = async function (page_numer,user_type) {
+  let page_size=15;
+    try {
+        var sql = `select * from user where account_type='${user_type}' LIMIT ${page_size} OFFSET ${(page_numer-1) * page_size}`;
+        var [fields] = await dbpool.query(sql)
+       
+        if (fields.length>0) {
+            var sql1 = `select count(*) from user where account_type='${user_type}'`;
+            var [field] = await dbpool.query(sql1);
+            return {message:"data fetched",data:fields,total_page:Math.ceil(field[0]['count(*)']/page_size),pageno:page_numer,status:1}
+                }
+            else
+        {
+            return  {message:"not data fected",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+exports.getCreatorService = async function (page_numer,user_type) {
+    let page_size=15
+    try {
+        var sql = `select user.*,creator.buiness_email, creator.business_name,
+                  creator.profile_image, creator.cover_image, creator.contact_number, creator.no_of_followers from user inner join creator on creator.user_id = user.id where account_type='creator' LIMIT ${page_size} OFFSET ${(page_numer-1) * page_size}`;
+         console.log(sql);
+        var [fields] = await dbpool.query(sql)
+        if (fields.length>0) {
+            var sql1 = `select count(*) from user inner join creator on creator.user_id = user.id where account_type='creator' `;
+            console.log(sql);
+            var [field] = await dbpool.query(sql1)
+
+            return {message:"data fetched",data:fields,total_page:Math.ceil(field[0]['count(*)']/page_size),pageno:page_numer,status:1}
+                }
+            else
+        {
+            return  {message:"not data fected",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+
 
 
 exports.likeTaatoos_service = async function (taatoo_id) {
   
-
-
      const sql =  `update user SET total_likes =total_likes+1 where id = '${taatoo_id}'`;
 
      const [fields] = await dbpool.query(sql);

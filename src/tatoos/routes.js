@@ -12,8 +12,13 @@ route.post('/get-taatoo-by-id-pagination',tattooController.getTaatoosById)
 route.post('/get-others-tagged-taatoo-by-id-pagination',tattooController.getTaggedTaatoosById)
 route.post('/like-taatoos',tattooController.likeTaatoos)
 
-
-
 route.post('/get-color-code',tattooController.getColorCode)
+// apis for admin
+
+route.post('/get-stats',tattooController.getstats)
+route.get('/get-users',tattooController.getUsers)
+route.post('/get-creator',tattooController.getCreator)
+
+
 
 module.exports = route

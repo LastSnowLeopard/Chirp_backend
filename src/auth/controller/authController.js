@@ -84,6 +84,54 @@ exports.updateUser = async (req, res) => {
 
 
 
+exports.updateAdminUser = async (req, res) => {
+ 
+    let full_name=req.body.full_name;
+    let address=req.body.address;
+    let user_id=req.body.id;
+    let account_status=req.body.account_status;
+    let notification=req.body.notification;
+
+    let data={
+        full_name,address,user_id,account_status,notification
+    }
+    
+    try {
+        const respond = await authService.updateAdminuser(data);
+       
+        res.status(200).send({ respond})     
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({message:error.message});
+    }  
+}
+
+
+exports.updateAdmincreator = async (req, res) => {
+ 
+    let full_name=req.body.full_name;
+    let address=req.body.address;
+    let user_id=req.body.id;
+    let account_status=req.body.account_status;
+    let business_name=req.body.business_name;
+    let notification=req.body.notification;
+
+    let data={
+        full_name,address,user_id,account_status,notification,business_name
+    }
+    
+    try {
+        const respond = await authService.updateAdminCreator(data);
+       
+        res.status(200).send({ respond})     
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({message:error.message});
+    }  
+}
+
+
+
 
 exports.verifyOTP = async (req, res) => {
     const otp = req.body.otp;
@@ -310,6 +358,42 @@ exports.notification_switch = async (req, res) => {
 
     }
            
+}
+
+
+exports.updateColorAdmin = async (req, res) => {
+    const id = req.body.id;
+    const color_code = req.body.color_code;
+    const color_name = req.body.color_name;
+    const color_discription = req.body.color_discription;
+    const color_in_use = req.body.color_in_use;
+    console.log(req.body)
+    try {
+        const respond = await authService.updateColorAdmin_service({id,color_code,color_name,color_discription,color_in_use});
+        res.status(200).send(respond);   
+        
+    }catch(e){
+        res.status(500).send({message:e.message})  
+
+    }          
+}
+
+
+
+exports.addColorAdmin = async (req, res) => {
+    const color_code = req.body.color_code;
+    const color_name = req.body.color_name;
+    const color_discription = req.body.color_discription;
+    const color_in_use = req.body.color_in_use;
+    console.log(req.body)
+    try {
+        const respond = await authService.addColorAdmin_service({color_code,color_name,color_discription,color_in_use});
+        res.status(200).send(respond);   
+        
+    }catch(e){
+        res.status(500).send({message:e.message})  
+
+    }          
 }
 
 

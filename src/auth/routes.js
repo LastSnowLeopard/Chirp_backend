@@ -24,15 +24,11 @@ route.post('/add_instant_user',authController.add_instant_user)
 route.post('/updateCreator',upload.fields([{name: 'profile_image'},{name: 'cover_image'}]),authController.updateCreator)
 
 route.post('/updateUser',authController.updateUser)
-
-
+route.post('/updateUseradmin',authController.updateAdminUser)
+route.post('/updateUserCreator',authController.updateAdmincreator)
 route.post('/turn_notification_on_off',authController.notification_switch)
-
 route.post('/getnotification_by_id',authController.getnotifications_by_id)
 
-
-
-
-
-
+route.post('/updateColorAdmin',authController.updateColorAdmin)
+route.post('/addColorAdmin',authController.addColorAdmin)
 module.exports = route
