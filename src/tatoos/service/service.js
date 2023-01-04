@@ -20,9 +20,17 @@ exports.add_taatoo = async function (data) {
 
     if(added_by=='creator')  creator_id=user_id;
 
+
+    var d = new Date();
+    d.setDate(d.getDate());
+    var dd = String(d.getDate());
+    var mm = String(d.getMonth() + 1); //January is 0!
+    var yyyy = d.getFullYear();
+    var today=yyyy+"/"+mm+"/"+dd;
+
     try {
-        var sql = `insert into taatoos (user_id, color_tone_id, image1, image2, image3, image4, image5, added_by,tagged_user_id,creator_id)
-            values ('${user_id}','${color_tone_id}','${img1}','${img2}','${img3}','${img4}','${img5}','${added_by}','${tagged_user_id}','${creator_id}') `;
+        var sql = `insert into taatoos (user_id, color_tone_id, image1, image2, image3, image4, image5, added_by,tagged_user_id,creator_id,created_at)
+            values ('${user_id}','${color_tone_id}','${img1}','${img2}','${img3}','${img4}','${img5}','${added_by}','${tagged_user_id}','${creator_id}','${today}') `;
         const [fields] = await dbpool.query(sql)
         console.log(fields.insertId);
         if (fields.affectedRows >= 1) {
@@ -156,26 +164,36 @@ exports.getColorCodeService = async function (data) {
     }
 };
 
-exports.getstats = async function () {
+exports.getstats = async function (qu,dates) {
   
 	let data={
         total_user:'',
         total_creator:'',
         total_tatoos:''
     }
+    let que1=``;
+    let que2=``;
+    if(dates==0){
+        que1=``;
+        que2=``;
+    }else{
+        que1=`AND created_at > '${qu}'`;
+        que2=`where created_at > '${qu}'`;
+    }
+
     try {
-        var sql = `select count(*) as total_user from user where account_type='user'`;
+        var sql = `select count(*) as total_user from user where account_type='user' ${que1}`;
          console.log(sql);
         var [fields] = await dbpool.query(sql)
         console.log(fields[0].total_user);
         data.total_user=fields[0].total_user;
-        var sql = `select count(*) as total_creator from user where account_type='creator'`;
+        var sql = `select count(*) as total_creator from user where account_type='creator' ${que1}`;
         console.log(sql);
          [fields] = await dbpool.query(sql)
         console.log(fields[0].total_creator);
         data.total_creator=fields[0].total_creator;
 
-        var sql = `select count(*) as total_tattoos from taatoos `;
+        var sql = `select count(*) as total_tattoos from taatoos   ${que2}`;
         console.log(sql);
          [fields] = await dbpool.query(sql)
         console.log(fields[0].total_tattoos);

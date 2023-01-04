@@ -125,9 +125,33 @@ exports.getColorCode = async (req, res) => {
 
 
 exports.getstats = async (req, res) => {
+    let dates=req.query.dates;
+    console.log(dates);
+
+    // var today = new Date();
+    // var dd = String(today.getDate()-dates).padStart(2, '0');
+    // var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    // var yyyy = today.getFullYear();
+    // today = mm + '/' + dd + '/' + yyyy;
+
+
+    var d = new Date();
+     d.setDate(d.getDate()-dates);
+     var dd = String(d.getDate());
+     var mm = String(d.getMonth() + 1); //January is 0!
+     var yyyy = d.getFullYear();
+     var today=yyyy+"/"+mm+"/"+dd;
+
+
+    let qu=`'${today}'`;
+    if(dates==0){
+        qu=``;  
+    }else{
+        qu=`${today}`
+    }
 
     try{
-        const respond = await authService.getstats();
+        const respond = await authService.getstats(qu,dates);
         res.status(200).send({ respond})     
     }catch(err){
         res.status(400).send({message:err.message});

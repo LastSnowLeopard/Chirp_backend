@@ -315,13 +315,21 @@ exports.registration_user = async function (data) {
     let pSalt = await bcrypt.genSalt(10);
     let hash  = await bcrypt.hash(data.password,pSalt);
     const { email} = data
+
+    var d = new Date();
+    d.setDate(d.getDate());
+    var dd = String(d.getDate());
+    var mm = String(d.getMonth() + 1); //January is 0!
+    var yyyy = d.getFullYear();
+    var today=yyyy+"/"+mm+"/"+dd;
+
     try {
                 var sql1 = `select * from user where email = '${email}'`;
                 const [data1,res] = await dbpool.query(sql1);
                 if(data1.length==0){
                     console.log("data",data)
-                    var sql = `insert into user (full_name, email, address, password, account_type, notification_status,otp)
-                     values ('${data.full_name}','${data.email}','${data.address}','${hash}','${data.account_type}','${data.notification}','${data.otp}') `;
+                    var sql = `insert into user (full_name, email, address, password, account_type, notification_status,otp,created_at)
+                     values ('${data.full_name}','${data.email}','${data.address}','${hash}','${data.account_type}','${data.notification}','${data.otp}','${today}') `;
                     const [fields] = await dbpool.query(sql)
                     console.log(fields.insertId);
                     if (fields.affectedRows >= 1) {
@@ -375,9 +383,14 @@ exports.add_creator_data = async function (data) {
   
     const { email} = data
     try {
-        
-        var sql = `insert into creator (buiness_email, profile_image, cover_image, user_id, contact_number)
-            values ('${data.email}','${data.profile_image}','${data.cover_image}','${data.user_id}','${data.contact_number}') `;
+        var d = new Date();
+        d.setDate(d.getDate());
+        var dd = String(d.getDate());
+        var mm = String(d.getMonth() + 1); //January is 0!
+        var yyyy = d.getFullYear();
+        var today=yyyy+"/"+mm+"/"+dd;
+        var sql = `insert into creator (buiness_email, profile_image, cover_image, user_id, contact_number,created_at)
+            values ('${data.email}','${data.profile_image}','${data.cover_image}','${data.user_id}','${data.contact_number}','${today}') `;
         const [fields] = await dbpool.query(sql)
         console.log(fields.insertId);
         if (fields.affectedRows >= 1) {
