@@ -270,8 +270,8 @@ exports.getCreatorService = async function (page_numer,user_type) {
 
 exports.likeTaatoos_service = async function (taatoo_id) {
   
-     const sql =  `update user SET total_likes =total_likes+1 where id = '${taatoo_id}'`;
-
+     const sql =  `update taatoos SET total_likes =total_likes+1 where id = ${taatoo_id}`;
+    console.log(sql)
      const [fields] = await dbpool.query(sql);
      console.log(fields,sql)
      try{
