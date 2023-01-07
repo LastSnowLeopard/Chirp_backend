@@ -15,6 +15,7 @@ route.post('/creator-registration',upload.fields([{name: 'profile_image'}, {name
 route.post('/logout',authController.logOut)
 route.post('/forget-password',authController.ForgetPassword);
 route.post('/reset-password',authController.reset_password);
+route.post('/reset-pass-withapp',authController.reset_password_with_old_passcode);
 
 route.post('/get_user_list',authController.get_user_list)
 route.post('/get_creator_list',authController.get_creator_list)
