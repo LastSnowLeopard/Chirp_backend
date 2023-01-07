@@ -39,6 +39,64 @@ exports.addTatoo = async (req, res) => {
 
 
 
+
+exports.archiveTatoo = async (req, res) => {
+    let tatoo_id=req.body.tatoo_id;
+
+    let img1=req.body.img1 || "";
+    let img2=req.body.img2 || "";
+    let img3=req.body.img3|| "";
+    let img4=req.body.img4|| "";
+    let img5=req.body.img5|| "";
+    let archied_at=req.body.archived_at|| "";
+    
+
+
+
+    if(img1 =="" && img2 =="" && img3 =="" && img4 =="" && img5 =="" ){
+        res.status(400).send({message:"no image provided"});
+    }
+    //settig name
+    let query=``;
+ 
+
+ 
+    try {
+
+        if(img1 !="" && img2 =="" && img3 =="" && img4 =="" && img5 =="" ){
+            query=`update taatoos set image1='${img1}',image_1_archived='${archied_at}' where id=${tatoo_id}`
+            console.log("1")
+        }
+    
+        if(img1 =="" && img2 !="" && img3 =="" && img4 =="" && img5 =="" ){
+            query=`update taatoos set image2='${img2}',image_2_archived='${archied_at}' where id=${tatoo_id}`
+            console.log("2")
+        }
+    
+        if(img1 =="" && img2 =="" && img3 !="" && img4 =="" && img5 =="" ){
+            query=`update taatoos set image3='${img3}',image_3_archived='${archied_at}' where id=${tatoo_id}`
+            console.log("3")
+        }
+    
+        if(img1 =="" && img2 =="" && img3 =="" && img4 !="" && img5 =="" ){
+            query=`update taatoos set image4='${img4}',image_4_archived='${archied_at}' where id=${tatoo_id}`
+            console.log("4")
+        }
+    
+        if(img1 =="" && img2 =="" && img3 =="" && img4 =="" && img5 !="" ){
+            query=`update taatoos set image5='${img5}',image_5_archived='${archied_at}' where id=${tatoo_id}`
+            console.log("4")
+        }
+    
+        const respond = await authService.archived_taatoo(query);
+               
+        res.status(200).send({ respond})     
+    } catch (error) {
+        console.log(error)
+        res.status(400).send({message:error.message});
+    }  
+}
+
 exports.getTaatoos = async (req, res) => {
 
     let data={
@@ -95,6 +153,7 @@ exports.getTaggedTaatoosById = async (req, res) => {
 
 exports.likeTaatoos = async (req, res) => {
     let taatoo_id=req.body.taatoo_id;
+    console.log("okookokok")
 
 try {
     const respond = await authService.likeTaatoos_service(taatoo_id);

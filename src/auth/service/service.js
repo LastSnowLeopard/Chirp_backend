@@ -9,10 +9,10 @@ exports.Login_get =async function (datas) {
     const {email,password,user_type } = datas;
     try {
    
-        var sql1 = `select * from user where email = '${email}' AND account_type='${user_type}'`;
+        var sql1 = `select * from user where email = '${email}' AND account_type='${user_type}' `;
         const [data] = await dbpool.query(sql1);  
    
-       if(data.length==0)
+       if(data.length==0 || data[0].account_status=='deleted')
        {
          return "Record Not Found"
        } 
@@ -118,6 +118,28 @@ exports.Logout_get = async function (data) {
     return "System Error" 
 }
 };
+
+exports.deleteAccountService = async function (data) {
+    const {user_id} = data;
+     const sql =  `update user SET account_status ='deleted' where id = '${user_id}'`;
+     const [fields] = await dbpool.query(sql);
+     try{
+     if(fields.affectedRows>=1){
+         return {message:"Account Deleted",data:{user_id:""},status:1}
+ 
+     }
+     else {
+          return {message:"Not Logout Successfully",data:{user_id:""},status:0}
+ 
+          
+     }
+ }catch(err)
+ {
+     return "System Error" 
+ }
+ };
+ 
+
 
 
 exports.notification_switch_service = async function (data) {
@@ -434,6 +456,7 @@ exports.resetPasswordService = async function (data) {
     const {user_id,email} = data;
         let pSalt = await bcrypt.genSalt(10);
     let hash  = await bcrypt.hash(data.password,pSalt);
+    console.log(hash);
 
      const sql =  `update user SET password ='${hash}' where id = '${user_id}'`;
 
@@ -453,6 +476,60 @@ exports.resetPasswordService = async function (data) {
      return "System Error" 
  }
  };
+
+ exports.resetPassWordWithOldPassCodeService = async function (data_rec) {
+    const {user_id,old_password} = data_rec;
+        let pSalt = await bcrypt.genSalt(10);
+        let hash  = await bcrypt.hash(data_rec.password,pSalt);
+
+    try{
+    var sql1 = `select * from user where id = '${user_id}'`;
+    const [data] = await dbpool.query(sql1);  
+
+   if(data.length==0)
+   {
+      
+     return {message:"No User Found with id",data:{user_id:""},status:0}
+
+   } 
+   else {
+    console.log()
+       const match = await bcrypt.compare(old_password, data[0].password);
+        if(!match){ 
+         
+            return {message:"Old password is not correct",data:{user_id:""},status:0}
+        }
+
+        const sql =  `update user SET password ='${hash}' where id = '${user_id}'`;
+
+        const [fields] = await dbpool.query(sql);
+        console.log(fields,sql)
+     
+        if(fields.affectedRows>=1){
+            return {message:"password Updated Successfully",data:{},status:1}
+        }
+        else {
+            return {message:"password Updated Successfully",data:{},status:0}
+        }
+
+
+
+
+}
+
+
+
+
+
+ }catch(err)
+ {
+    console.log(err);
+    return {message:"system err",data:{},status:0}
+ }
+ };
+
+
+ 
 
 exports.get_user_listService = async function (data) {
 

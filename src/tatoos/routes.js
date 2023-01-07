@@ -7,6 +7,7 @@ const upload= require('../../helper/imageUploader');
 // const {auth,verifyOrigin} = require("../../helper/auth")
 
 route.post('/add-taattos',upload.fields([{name: 'img1'}, {name: 'img2'},{name: 'img3'}, {name: 'img4'},{name: 'img5'}]),tattooController.addTatoo)
+route.post('/archive-taatoo',upload.fields([{name: 'img1'}, {name: 'img2'},{name: 'img3'}, {name: 'img4'},{name: 'img5'}]),tattooController.archiveTatoo)
 route.post('/get-taatoo-by-pagination',tattooController.getTaatoos)
 route.post('/get-taatoo-by-id-pagination',tattooController.getTaatoosById)
 route.post('/get-others-tagged-taatoo-by-id-pagination',tattooController.getTaggedTaatoosById)

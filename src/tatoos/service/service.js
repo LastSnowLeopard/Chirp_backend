@@ -49,6 +49,30 @@ exports.add_taatoo = async function (data) {
 };
 
 
+exports.archived_taatoo = async function (query) {
+  
+
+
+
+    try {
+       
+        const [fields] = await dbpool.query(query)
+        console.log(fields.insertId);
+        if (fields.affectedRows >= 1) {
+            return {message:"taatoots  archived Successfully",data:{},status:1}
+                }
+            else
+        {
+            return  {message:"Error in data",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
 
 exports.getTaatoosService = async function (data) {
     try {

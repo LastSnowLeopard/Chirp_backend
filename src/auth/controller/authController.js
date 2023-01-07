@@ -2,8 +2,6 @@
 const authService=require('../service/service');
 
 
-
-
 const mail = require('../../../helper/mail')
 exports.userRegistration = async (req, res) => {
 
@@ -229,6 +227,21 @@ exports.logOut = async (req, res) => {
 }
 
 
+exports.deleteAccount = async (req, res) => {
+   
+    const user_id = req.body.user_id;
+    try {
+        const respond = await authService.deleteAccountService({user_id});
+        res.status(200).send(respond);   
+        
+    }catch(e){
+        res.status(500).send({message:error.message})  
+
+    }
+           
+}
+
+
 
 
 exports.ForgetPassword = async (req, res) => {
@@ -272,6 +285,33 @@ try {
 }
 
 }
+
+
+exports.reset_password_with_old_passcode = async (req, res) => {
+
+    let user_id=req.body.user_id;
+    let password=req.body.password;
+    let old_password=req.body.old_password;
+
+   console.log("ok")
+try {
+    const respond = await authService.resetPassWordWithOldPassCodeService({user_id,password,old_password});
+    if(respond.status=="1"){
+        // otp="YOUR OTP CODE IS :"+otp;
+            // let mailResponse = await mail.sendMail(otp, email);
+            res.status(200).send(respond)
+    }else{
+        res.status(200).send(respond)
+    }
+
+}catch(e){
+    console.log(e);
+}
+
+}
+
+
+
 
 
 exports.get_user_list = async (req, res) => {
