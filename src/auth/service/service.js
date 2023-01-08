@@ -78,8 +78,6 @@ exports.Login_get =async function (datas) {
 
    }
 
-
-
    
 exports.getNotificationService=async function (data) {
 

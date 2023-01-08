@@ -235,7 +235,7 @@ exports.deleteAccount = async (req, res) => {
         res.status(200).send(respond);   
         
     }catch(e){
-        res.status(500).send({message:error.message})  
+        res.status(500).send({message:e.message})  
 
     }
            
