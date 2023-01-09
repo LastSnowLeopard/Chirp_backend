@@ -134,6 +134,32 @@ exports.getTaatoosByIDService = async function (data) {
 };
 
 
+exports.getTaatoosdetailByIdService = async function (data) {
+
+    try {
+        var sql = `select user.full_name,taatoos.* from taatoos 
+        left join user on taatoos.creator_id=user.id
+         where taatoos.id='${data.id}'`;
+       console.log(sql);
+        var [fields] = await dbpool.query(sql)
+        console.log(fields);
+
+        if (fields.length >= 0) {
+            return {message:"Data Fetched",data:fields,status:1}
+                }
+            else
+        {
+            return  {message:"not data fected",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+
 exports.getTagsTaatoosByIDService = async function (data) {
 
     try {
