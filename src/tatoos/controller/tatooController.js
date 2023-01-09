@@ -127,9 +127,26 @@ exports.getTaatoosById = async (req, res) => {
         const respond = await authService.getTaatoosByIDService(data);
         res.status(200).send({ respond})     
     }catch(err){
-        res.status(400).send({message:error.message});
+        res.status(400).send({message:err.message});
     }
 }
+
+
+exports.getTaatoosdetailById = async (req, res) => {
+
+    let data={
+        id:req.body.id
+    };
+
+    try{
+        const respond = await authService.getTaatoosdetailByIdService(data);
+        res.status(200).send({ respond})     
+    }catch(err){
+        res.status(400).send({message:err.message});
+    }
+}
+
+
 
 exports.getTaggedTaatoosById = async (req, res) => {
 
@@ -144,7 +161,7 @@ exports.getTaggedTaatoosById = async (req, res) => {
         const respond = await authService.getTagsTaatoosByIDService(data);
         res.status(200).send({ respond})     
     }catch(err){
-        res.status(400).send({message:error.message});
+        res.status(400).send({message:err.message});
     }
 }
 
@@ -153,7 +170,6 @@ exports.getTaggedTaatoosById = async (req, res) => {
 
 exports.likeTaatoos = async (req, res) => {
     let taatoo_id=req.body.taatoo_id;
-    console.log("okookokok")
 
 try {
     const respond = await authService.likeTaatoos_service(taatoo_id);
@@ -223,7 +239,7 @@ exports.getUsers = async (req, res) => {
         const respond = await authService.getUsersService(req.query.page,req.query.account_type);
         res.status(200).send({ respond})     
     }catch(err){
-        res.status(400).send({message:error.message});
+        res.status(400).send({message:err.message});
     }
 }
 
