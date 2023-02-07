@@ -51,9 +51,6 @@ exports.add_taatoo = async function (data) {
 
 exports.archived_taatoo = async function (query) {
   
-
-
-
     try {
        
         const [fields] = await dbpool.query(query)
@@ -338,3 +335,55 @@ exports.likeTaatoos_service = async function (taatoo_id) {
      return "System Error" 
  }
  };
+
+
+
+exports.WriteCommentsService = async function (obj) {
+
+const query = `INSERT INTO comments (taatoo_id, added_by, comment, created_at, user_id)
+VALUES (${obj.tattoo_id}, '${obj.added_by}', '${obj.comment}', NOW(), ${obj.user_id})`;
+
+    try {
+       
+        const [fields] = await dbpool.query(query)
+        console.log(fields.insertId);
+        if (fields.affectedRows >= 1) {
+            return {message:"Comment Inserted",data:{},status:1}
+                }
+            else
+        {
+            return  {message:"Insertion Failed",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+
+
+exports.ReadCommentsService = async function (taatoo_id) {
+
+    try {
+        var sql = `select * from comments
+         where taatoo_id='${taatoo_id}'`;
+       console.log(sql);
+        var [fields] = await dbpool.query(sql)
+        console.log(fields);
+
+        if (fields.length >= 0) {
+            return {message:"Data Fetched",data:fields,status:1}
+                }
+            else
+        {
+            return  {message:"not data fected",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};

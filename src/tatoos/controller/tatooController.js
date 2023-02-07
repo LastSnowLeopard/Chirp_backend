@@ -256,3 +256,31 @@ exports.getCreator = async (req, res) => {
 }
 
 
+exports.ReadComments = async (req, res) => {
+
+    try{
+        const respond = await authService.ReadCommentsService(req.body.tattoo_id);
+        res.status(200).send({ respond})     
+    }catch(err){
+        res.status(400).send({message:err.message});
+    }
+}
+
+exports.WriteComments = async (req, res) => {
+
+    const obj = {
+        tattoo_id: req.body.tattoo_id,
+        added_by: req.body.added_by, //user,creator
+        comment: req.body.comment,
+        user_id: req.body.user_id
+      };
+
+    try{
+        const respond = await authService.WriteCommentsService(obj);
+        res.status(200).send({ respond})     
+    }catch(err){
+        res.status(400).send({message:err.message});
+    }
+}
+
+

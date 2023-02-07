@@ -21,6 +21,11 @@ route.post('/get-stats',tattooController.getstats)
 route.get('/get-users',tattooController.getUsers)
 route.post('/get-creator',tattooController.getCreator)
 
+route.post('/read-comments',tattooController.ReadComments)
+route.post('/write-comments',tattooController.WriteComments)
+
+
 
 
 module.exports = route
+// CREATE TABLE `taatoo_application`.`comments` ( `id` INT(5) NOT NULL AUTO_INCREMENT , `taatoo_id` INT(5) NULL DEFAULT NULL , `added_by` VARCHAR(5) NULL DEFAULT NULL , `comment` VARCHAR(500) NULL DEFAULT NULL , `created_at` INT(40) NULL DEFAULT NULL , `user_id` INT(10) NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
