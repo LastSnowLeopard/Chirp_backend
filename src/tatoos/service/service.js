@@ -340,8 +340,8 @@ exports.likeTaatoos_service = async function (taatoo_id) {
 
 exports.WriteCommentsService = async function (obj) {
 
-const query = `INSERT INTO comments (taatoo_id, added_by, comment, created_at, user_id)
-VALUES (${obj.tattoo_id}, '${obj.added_by}', '${obj.comment}', NOW(), ${obj.user_id})`;
+const query = `INSERT INTO comments (taatoo_id, added_by, comment, user_id)
+VALUES (${obj.tattoo_id}, '${obj.added_by}', '${obj.comment}', ${obj.user_id})`;
 
     try {
        
