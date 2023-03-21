@@ -52,6 +52,7 @@ exports.add_taatoo = async function (data) {
 exports.archived_taatoo = async function (query) {
   
     try {
+        console.log(query)
        
         const [fields] = await dbpool.query(query)
         console.log(fields.insertId);

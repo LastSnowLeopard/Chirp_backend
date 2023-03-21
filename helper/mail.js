@@ -16,13 +16,13 @@ module.exports.sendMail= async function sendMail(msg,email) {
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'Targetsin@gmail.com',
-      pass: 'vsvfbgbandmxtwef'
+      user: 'MJonestattoos@gmail.com',
+      pass: 'guzhip-Jembyd-7Tazva'
     }
   });
 
   var mailOptions = {
-    from: 'ivyinteractiolutions@gmail.com',
+    from: 'MJonestattoos@gmail.com',
     to: [emailAdress],
 
     subject: 'Taatoo App OTP',

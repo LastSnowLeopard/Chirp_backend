@@ -2,7 +2,6 @@ const  bcrypt = require('bcrypt')
 const  jwt = require('jsonwebtoken')
 const {pool} = require('../../../config/db');
 const dbpool=pool.promise();
-// let   pKey = "96udnagramu";
 
 
 exports.Login_get =async function (datas) {
