@@ -135,9 +135,19 @@ exports.getTaatoosByIDService = async function (data) {
 exports.getTaatoosdetailByIdService = async function (data) {
 
     try {
-        var sql = `select user.full_name,taatoos.* from taatoos 
-        left join user on taatoos.creator_id=user.id
-         where taatoos.id='${data.id}'`;
+        var sql = `SELECT 
+        taatoos.*, 
+        CASE 
+          WHEN like_record.user_id = ${data.user_id} THEN 1 
+          ELSE 0 
+        END AS is_liked 
+      FROM 
+        taatoos 
+        LEFT JOIN like_record 
+          ON taatoos.id = like_record.taatoo_id 
+      WHERE 
+        taatoos.id=${data.id}
+      `;
        console.log(sql);
         var [fields] = await dbpool.query(sql)
         console.log(fields);
@@ -316,25 +326,79 @@ exports.getCreatorService = async function (page_numer,user_type) {
 
 
 
-exports.likeTaatoos_service = async function (taatoo_id) {
-  
-     const sql =  `update taatoos SET total_likes =total_likes+1 where id = ${taatoo_id}`;
-    console.log(sql)
-     const [fields] = await dbpool.query(sql);
-     console.log(fields,sql)
-     try{
-     if(fields.affectedRows>=1){
-        return {message:" Updated Successfully",data:{},status:1}
+exports.likeTaatoos_service = async function (taatoo_id,user_id) {
+    
+    var sql = `SELECT * FROM like_record WHERE user_id='${user_id}'  AND taatoo_id='${taatoo_id}'`;
+  console.log(sql);
+   var [fields] = await dbpool.query(sql)
+   console.log(fields);
 
-     }
-     else {
-        return {message:"Not Updated Successfully",data:{},status:0}
+   if (fields.length >= 0) {
 
-     }
- }catch(err)
- {
-     return "System Error" 
- }
+
+
+    const sqllll =  `delete from like_record  WHERE user_id='${user_id}'  AND taatoo_id='${taatoo_id}'`;
+    console.log(sqllll)
+    const [fieldss] = await dbpool.query(sqllll);
+    console.log(fieldss,sqllll)
+    if(fieldss.affectedRows>=1){
+      
+                    const sql =  `update taatoos SET total_likes =total_likes-1 where id = ${taatoo_id}`;
+                    console.log(sql)
+                    const [fields] = await dbpool.query(sql);
+                    console.log(fields,sql)
+                    try{
+                    if(fields.affectedRows>=1){
+                        return {message:"disliked",data:{},status:1}
+
+                    }
+                    else {
+                        return {message:"failed",data:{},status:0}
+
+                    }
+                    }catch(err)
+                    {
+                        return "System Error" 
+                    }
+
+
+    }
+    else {
+
+                    const sqllll =  `INSERT INTO like_record( user_id, taatoo_id) VALUES ('${user_id}','${taatoo_id}')`;
+                    console.log(sqllll)
+                    const [fieldss] = await dbpool.query(sqllll);
+                    console.log(fieldss,sqllll)
+                    if(fieldss.affectedRows>=1){
+      
+                        const sql1 =  `update taatoos SET total_likes =total_likes+1 where id = ${taatoo_id}`;
+                        console.log(sql1)
+                        const [fields1] = await dbpool.query(sql1);
+                        console.log(fields1,sql1)
+                        try{
+                            if(fields1.affectedRows>=1){
+                                return {message:"liked",data:{},status:1}
+
+                            }
+                            else {
+                                return {message:"failed",data:{},status:0}
+
+                            }
+                        }catch(err)
+                        {
+                            return "System Error" 
+                        }
+
+                }else{
+
+                    return {message:"failed",data:{},status:0}
+                }
+    }
+         
+
+           }
+          
+
  };
 
 

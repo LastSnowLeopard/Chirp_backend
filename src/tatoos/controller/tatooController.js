@@ -135,7 +135,8 @@ exports.getTaatoosById = async (req, res) => {
 exports.getTaatoosdetailById = async (req, res) => {
 
     let data={
-        id:req.body.id
+        id:req.body.id,
+        user_id:req.body.req.body.user_id
     };
 
     try{
@@ -170,9 +171,10 @@ exports.getTaggedTaatoosById = async (req, res) => {
 
 exports.likeTaatoos = async (req, res) => {
     let taatoo_id=req.body.taatoo_id;
+    let user_id=req.body.user_id;
 
 try {
-    const respond = await authService.likeTaatoos_service(taatoo_id);
+    const respond = await authService.likeTaatoos_service(taatoo_id,user_id);
     if(respond.status=="1"){
 
             res.status(200).send(respond)
