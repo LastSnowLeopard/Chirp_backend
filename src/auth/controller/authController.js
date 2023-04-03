@@ -7,16 +7,16 @@ exports.userRegistration = async (req, res) => {
 
     let full_name=req.body.full_name;
     let email=req.body.email;
-    let address=req.body.address;
+    // let address=req.body.address || "";
     let password=req.body.password;
-    let account_type="user";
-    let notification=req.body.notification;
+    // let account_type="user";
+    // let notification=req.body.notification;
     let created_at=new Date().toISOString();
     let updated_at=new Date().toISOString();
     var otp = Math.floor(1000 + Math.random() * 9000);
  
     let user_registration_data={
-        full_name,email,address,password,account_type,notification,created_at,otp,updated_at
+        full_name,email,password,created_at,updated_at
     }
     
     try {
@@ -24,7 +24,7 @@ exports.userRegistration = async (req, res) => {
        
         if(respond.status==1){
             otp="YOUR OTP CODE IS :"+otp;
-            let mailResponse = await mail.sendMail(otp, email);
+            // let mailResponse = await mail.sendMail(otp, email);
         }
 
         
@@ -153,17 +153,11 @@ exports.getLogin = async (req, res) => {
     try {
         let respond = await authService.Login_get(req.body);
 
-        if(respond.status==1){
-            if(req.body.user_type=='creator'){
-                 respond = await authService.getBusinessData(respond);
-
-
-            }
-        }
-
-
-
-
+        // if(respond.status==1){
+        //     if(req.body.user_type=='creator'){
+        //          respond = await authService.getBusinessData(respond);
+        //     }
+        // }
 
         res.status(200).send({message: respond})
          

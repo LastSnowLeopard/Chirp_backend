@@ -11,7 +11,7 @@ app.use(express.json({limit: '50mb'}));
 
 // import routes
 const AuthRoutes = require('./src/auth/routes')
-const TaatooRoutes = require('./src/tatoos/routes')
+// const TaatooRoutes = require('./src/tatoos/routes')
 
 
 app.use(cors())
@@ -42,7 +42,7 @@ app.use(express.static(__dirname + 'uploads')); //Serves resources from public f
 // routes....................................................................
 
 app.use("/api/auth", AuthRoutes) 
-app.use("/api/taatoos", TaatooRoutes) 
+// app.use("/api/taatoos", TaatooRoutes) 
 
 
 app.use((req, res, error) => {

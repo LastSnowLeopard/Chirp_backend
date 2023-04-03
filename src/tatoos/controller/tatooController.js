@@ -136,7 +136,7 @@ exports.getTaatoosdetailById = async (req, res) => {
 
     let data={
         id:req.body.id,
-        user_id:req.body.req.body.user_id
+        user_id:req.body.user_id
     };
 
     try{

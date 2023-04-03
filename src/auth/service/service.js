@@ -4,28 +4,76 @@ const {pool} = require('../../../config/db');
 const dbpool=pool.promise();
 
 
-exports.Login_get =async function (datas) {
-    const {email,password,user_type } = datas;
+
+
+
+exports.registration_user = async function (data) {
+    let pSalt = await bcrypt.genSalt(10);
+    let hash  = await bcrypt.hash(data.password,pSalt);
+    const { email} = data
+
+    var d = new Date();
+    d.setDate(d.getDate());
+    var dd = String(d.getDate());
+    var mm = String(d.getMonth() + 1); //January is 0!
+    var yyyy = d.getFullYear();
+    var today=yyyy+"/"+mm+"/"+dd;
+
     try {
-   
-        var sql1 = `select * from user where email = '${email}' AND account_type='${user_type}' `;
+                var sql1 = `select * from users where email = '${email}'`;
+                const [data1,res] = await dbpool.query(sql1);
+                if(data1.length==0){
+                    console.log("data",data)
+                    var sql =  `INSERT INTO users (full_name, email, password, account_created)
+                            VALUES ('${data.full_name}', '${data.email}', '${hash}', '${today}'); `
+                   
+                    const [fields] = await dbpool.query(sql)
+                    console.log(fields.insertId);
+                    if (fields.affectedRows >= 1) {
+                        return {message:"User Registered Successfully",data:{user_id:fields.insertId},status:1}
+                            }
+                     else
+                    {
+                        return  {message:"Error in data",data:{},status:0 }
+                    }       
+            }
+            else
+            {
+                if(data1[0].email==email){
+                      return  {message:"Account with this Email address is already Exist",data:{},status:0}
+                }
+               
+            }
+    }
+ 
+    catch (err) {
+        console.log(err)
+        return err+"System Error";
+    }
+};
+
+
+
+exports.Login_get =async function (datas) {
+    const {email,password } = datas;
+    try {
+        var sql1 = `select * from users where email = '${email}' `;
         const [data] = await dbpool.query(sql1);  
    
        if(data.length==0 || data[0].account_status=='deleted')
        {
-         return "Record Not Found"
+         return "Account Not Exist"
        } 
        else {
            const match = await bcrypt.compare(password, data[0].password);
             if(!match){ 
-             
-                return {message:"Not Login Successfully Wrong Password",data:{user_id:""},status:0}
-        }
+                    return {message:"Email or Password is Wrong",data:{user_id:""},status:0}
+                }
             else{ 
                const accessToken = jwt.sign({id : data[0].id},"mycustomersecretkey",{ expiresIn: '58m' } ); 
-               const user_id = data[0].id ;  
-               const sql1 = `update user SET jwt_token ='${accessToken}' where id = '${user_id}' `;
-   
+               const user_id = data[0].user_id ;  
+               const sql1 = `update users SET jwt_token ='${accessToken}' where user_id = '${user_id}' `;
+                console.log(sql1)
                // console.log(sql1)
                const [fields] = await dbpool.query(sql1);  
                if(fields.affectedRows>=1){
@@ -34,10 +82,8 @@ exports.Login_get =async function (datas) {
                "message" : "Login Successfully",
                "Token" : accessToken,
                "user_id" : data[0].id,
-               "user_name" : data[0].full_name,
-               "address" : data[0].address,
-               "email" : data[0].email,
-               "notification_status":data[0].notification_status
+               "full_name" : data[0].full_name,
+               "email" : data[0].email
                },status:1}
                 }
                 else
@@ -330,49 +376,6 @@ exports.update_user = async function (data) {
  }
  };
 
-exports.registration_user = async function (data) {
-    let pSalt = await bcrypt.genSalt(10);
-    let hash  = await bcrypt.hash(data.password,pSalt);
-    const { email} = data
-
-    var d = new Date();
-    d.setDate(d.getDate());
-    var dd = String(d.getDate());
-    var mm = String(d.getMonth() + 1); //January is 0!
-    var yyyy = d.getFullYear();
-    var today=yyyy+"/"+mm+"/"+dd;
-
-    try {
-                var sql1 = `select * from user where email = '${email}'`;
-                const [data1,res] = await dbpool.query(sql1);
-                if(data1.length==0){
-                    console.log("data",data)
-                    var sql = `insert into user (full_name, email, address, password, account_type, notification_status,otp,created_at)
-                     values ('${data.full_name}','${data.email}','${data.address}','${hash}','${data.account_type}','${data.notification}','${data.otp}','${today}') `;
-                    const [fields] = await dbpool.query(sql)
-                    console.log(fields.insertId);
-                    if (fields.affectedRows >= 1) {
-                        return {message:"User Registered Successfully",data:{user_id:fields.insertId},status:1}
-                            }
-                     else
-                    {
-                        return  {message:"Error in data",data:{},status:0 }
-                    }       
-            }
-            else
-            {
-                if(data1[0].email==email){
-                      return  {message:"Your email  already exist",data:{},status:0}
-                }
-               
-            }
-    }
- 
-    catch (err) {
-        console.log(err)
-        return err+"System Error";
-    }
-};
 
 exports.forgetPassword = async function (data) {
  

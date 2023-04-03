@@ -17,7 +17,7 @@ module.exports.sendMail= async function sendMail(msg,email) {
     service: 'gmail',
     auth: {
       user: 'MJonestattoos@gmail.com',
-      pass: 'guzhip-Jembyd-7Tazva'
+      pass: 'guzhip-Jembyd-7Tazva' 
     }
   });
 

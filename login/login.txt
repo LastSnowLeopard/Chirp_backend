@@ -1,0 +1,12 @@
+ssh -i chrip.pem ubuntu@13.50.151.52
+
+chrisp
+
+
+CREATE USER 'super1'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Super1@123456';
+
+super1
+Super1@123456
+
+token
+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
