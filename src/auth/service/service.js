@@ -60,7 +60,7 @@ exports.Login_get =async function (datas) {
     const {email,password } = datas;
 
     email=email.toLowerCase();
-    
+
     try {
         var sql1 = `select * from users where email = '${email}' `;
         const [data] = await dbpool.query(sql1);  
@@ -386,14 +386,14 @@ exports.forgetPassword = async function (data) {
  
     const { email} = data
     try {
-    const sql =  `update user SET otp =${data.otp} where  email='${email}'`;
+    // const sql =  `update users SET otp =${data.otp} where  email='${email}'`;
     const [fields] = await dbpool.query(sql);
     
     if(fields.affectedRows>=1){
-        var sql1 = `select * from user where email = '${email}'`;
+        var sql1 = `select * from users where email = '${email}'`;
         const [data1,res] = await dbpool.query(sql1);
 
-        return {message:"OTP send to reset password",data:{user_id:data1[0].id,email:email},status:1}
+        return {message:"Password Reset Link Has been generated and sent to your registered account",data:{user_id:data1[0].id,email:email},status:1}
     }
     else {
          return {message:"your account doestnot exist",data:{user_id:"",email:""},status:0}
