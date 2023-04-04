@@ -55,7 +55,12 @@ exports.registration_user = async function (data) {
 
 
 exports.Login_get =async function (datas) {
+
+
     const {email,password } = datas;
+
+    email=email.toLowerCase();
+    
     try {
         var sql1 = `select * from users where email = '${email}' `;
         const [data] = await dbpool.query(sql1);  

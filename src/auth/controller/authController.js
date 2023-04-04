@@ -15,6 +15,8 @@ exports.userRegistration = async (req, res) => {
     let updated_at=new Date().toISOString();
     var otp = Math.floor(1000 + Math.random() * 9000);
  
+    email=email.toLowerCase();
+
     let user_registration_data={
         full_name,email,password,created_at,updated_at
     }
