@@ -236,6 +236,7 @@ exports.deleteAccount = async (req, res) => {
 
 
 exports.ForgetPassword = async (req, res) => {
+    console.log(req.body)
     let email=req.body.email;
         email=email.toLowerCase();
     var hash = Math.floor(1000 + Math.random() * 9000);
