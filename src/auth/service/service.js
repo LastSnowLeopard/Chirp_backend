@@ -387,9 +387,9 @@ exports.forgetPassword = async function (data) {
     const { email} = data
     try {
     // const sql =  `update users SET otp =${data.otp} where  email='${email}'`;
-    const [fields] = await dbpool.query(sql);
+    // const [fields] = await dbpool.query(sql);
     
-    if(fields.affectedRows>=1){
+    if(true){
         var sql1 = `select * from users where email = '${email}'`;
         const [data1,res] = await dbpool.query(sql1);
 
