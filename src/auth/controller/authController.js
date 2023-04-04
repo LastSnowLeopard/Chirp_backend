@@ -154,11 +154,7 @@ exports.getLogin = async (req, res) => {
     try {
         let respond = await authService.Login_get(req.body);
 
-        // if(respond.status==1){
-        //     if(req.body.user_type=='creator'){
-        //          respond = await authService.getBusinessData(respond);
-        //     }
-        // }
+     
 
         res.status(200).send({message: respond})
          

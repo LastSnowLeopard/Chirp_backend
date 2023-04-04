@@ -59,10 +59,10 @@ exports.Login_get =async function (datas) {
 
     const {email,password } = datas;
 
-    email=email.toLowerCase();
+    let emaillowercase=email.toLowerCase();
 
     try {
-        var sql1 = `select * from users where email = '${email}' `;
+        var sql1 = `select * from users where email = '${emaillowercase}' `;
         const [data] = await dbpool.query(sql1);  
    
        if(data.length==0 || data[0].account_status=='deleted')
