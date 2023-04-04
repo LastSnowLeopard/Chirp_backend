@@ -386,8 +386,12 @@ exports.forgetPassword = async function (data) {
  
     const { email} = data
     try {
-    // const sql =  `update users SET otp =${data.otp} where  email='${email}'`;
-    // const [fields] = await dbpool.query(sql);
+
+    let timestamps=Date.now();
+    let temp=``;
+    const sql =  `update users SET link_generation_time ='${timestamps}',reset_link='${temp}' where  email='${email}'`;
+    
+    const [fields] = await dbpool.query(sql);
     
     if(true){
         var sql1 = `select * from users where email = '${email}'`;
@@ -441,15 +445,22 @@ exports.add_creator_data = async function (data) {
     }
 };
 
-exports.verifyOTPService = async function (data) {
+exports.verifyPasswordLinkService = async function (data) {
 
 try{
-    var sql1 = `select * from user where id = '${data.user_id}' AND otp='${data.otp}'`;
+    var sql1 = `select * from users where user_id = '${data.user_id}'`;
                 const [data1,res] = await dbpool.query(sql1);
                 if(data1.length>0){
-                    return {message:"OTP Matched",data:{opt_matched:"1"},status:1}
+
+                    let timeDifference=Date.now()- data1[0].link_generation_time;
+                    if(timeDifference>1800000){
+                        return {message:"Link Expired",data:{validated:"0"},status:0}
+                    }else{
+                        return {message:"Please reset your password",data:{validated:"1"},status:1}
+                    }
+
                 }else{
-                    return {message:"OTP doesnot Matched",data:{opt_matched:"0"},status:0}
+                    return {message:"Link is not valid",data:{validated:"0"},status:0}
                 }
 
 
@@ -462,12 +473,12 @@ try{
 }
 
 exports.resetPasswordService = async function (data) {
-    const {user_id,email} = data;
+    const {user_id} = data;
         let pSalt = await bcrypt.genSalt(10);
     let hash  = await bcrypt.hash(data.password,pSalt);
     console.log(hash);
 
-     const sql =  `update user SET password ='${hash}' where id = '${user_id}'`;
+     const sql =  `update users SET password ='${hash}' where user_id = '${user_id}'`;
 
      const [fields] = await dbpool.query(sql);
      console.log(fields,sql)
@@ -477,7 +488,7 @@ exports.resetPasswordService = async function (data) {
 
      }
      else {
-        return {message:"password Updated Successfully",data:{},status:0}
+        return {message:"password updation failed",data:{},status:0}
 
      }
  }catch(err)

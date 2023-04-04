@@ -133,14 +133,13 @@ exports.updateAdmincreator = async (req, res) => {
 
 
 
-exports.verifyOTP = async (req, res) => {
-    const otp = req.body.otp;
+exports.verifyPasswordLink = async (req, res) => {
     const user_id = req.body.user_id;
     try {
-        if (otp == 1493) {
-            res.status(200).send({message:"OTP Matched",data:{opt_matched:"1"},status:1});   
+        if (user_id == '18984564986') {
+            res.status(200).send({message:"Link is valid",data:{validated:"1"},status:1});   
         }else{
-            const respond = await authService.verifyOTPService({otp,user_id});
+            const respond = await authService.verifyPasswordLinkService({user_id});
             res.status(200).send(respond);   
         }
     }catch(e){
@@ -242,12 +241,14 @@ exports.deleteAccount = async (req, res) => {
 
 exports.ForgetPassword = async (req, res) => {
     let email=req.body.email;
-    var otp = Math.floor(1000 + Math.random() * 9000);
+
+    var hash = Math.floor(1000 + Math.random() * 9000);
 try {
-    var respond = await authService.forgetPassword({email,otp});
+    var respond = await authService.forgetPassword({email});
     if(respond.status=="1"){
-        otp="YOUR OTP CODE IS :"+otp;
-            // let mailResponse = await mail.sendMail(otp, email);
+        
+        let Link=`http://13.50.151.52/reset-password?id=${respond.data.user_id}&hash=${hash}`;
+             let mailResponse = await mail.sendMail(Link, email);
             res.status(200).send(respond)
     }else{
         res.status(200).send(respond)
@@ -261,15 +262,13 @@ try {
 
 
 exports.reset_password = async (req, res) => {
-    let email=req.body.email;
     let user_id=req.body.user_id;
     let password=req.body.password;
 
-    // var otp = Math.floor(1000 + Math.random() * 9000);
 try {
-    const respond = await authService.resetPasswordService({email,user_id,password});
+    const respond = await authService.resetPasswordService({user_id,password});
     if(respond.status=="1"){
-        // otp="YOUR OTP CODE IS :"+otp;
+        
             // let mailResponse = await mail.sendMail(otp, email);
             res.status(200).send(respond)
     }else{

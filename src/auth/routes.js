@@ -9,14 +9,14 @@ const upload = require('../../helper/imageUploader');
 
 
 route.post('/user-registration',authController.userRegistration)
-// route.post('/verify-otp',authController.verifyOTP)
+route.post('/verify-password-link',authController.verifyPasswordLink)
 route.post('/login',authController.getLogin)
 // route.post('/creator-registration',upload.fields([{name: 'profile_image'}, {name: 'cover_image'}]),authController.CreatorRegistration)
 // route.post('/logout',authController.logOut)
 // route.post('/delete_account',authController.deleteAccount)
 
 route.post('/forget-password',authController.ForgetPassword);
-// route.post('/reset-password',authController.reset_password);
+route.post('/reset-password',authController.reset_password);
 // route.post('/reset-pass-withapp',authController.reset_password_with_old_passcode);
 
 // route.post('/get_user_list',authController.get_user_list)
