@@ -14,18 +14,20 @@ module.exports.sendMail= async function sendMail(msg,email) {
         let emailAdress=`${email}`
       
   var transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtps.namecheap.com',
+    port: 465,
+    secure: true,
     auth: {
-      user: 'MJonestattoos@gmail.com',
-      pass: 'guzhip-Jembyd-7Tazva' 
+      user: 'Noreply@chirp.one',
+      pass: 'chirpsocial28' 
     }
   });
 
   var mailOptions = {
-    from: 'MJonestattoos@gmail.com',
+    from: 'Noreply@chirp.one',
     to: [emailAdress],
 
-    subject: 'Taatoo App OTP',
+    subject: 'Reset your Password',
     text: data
   };
 
