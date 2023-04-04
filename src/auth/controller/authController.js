@@ -244,10 +244,10 @@ exports.ForgetPassword = async (req, res) => {
     let email=req.body.email;
     var otp = Math.floor(1000 + Math.random() * 9000);
 try {
-    const respond = await authService.forgetPassword({email,otp});
+    var respond = await authService.forgetPassword({email,otp});
     if(respond.status=="1"){
         otp="YOUR OTP CODE IS :"+otp;
-            let mailResponse = await mail.sendMail(otp, email);
+            // let mailResponse = await mail.sendMail(otp, email);
             res.status(200).send(respond)
     }else{
         res.status(200).send(respond)
