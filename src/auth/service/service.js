@@ -392,11 +392,15 @@ exports.forgetPassword = async function (data) {
     if(true){
         var sql1 = `select * from users where email = '${email}'`;
         const [data1,res] = await dbpool.query(sql1);
-
-        return {message:"Password Reset Link Has been generated and sent to your registered account",data:{user_id:data1[0].id,email:email},status:1}
+        console.log(data1,"*********")
+        if(data1.length>0)
+        return {message:"Password Reset Link Has been generated and sent to your registered account",data:{user_id:data1[0].user_id,email:email},status:1}
+        else
+        return {message:"your account doestnot exist",data:{user_id:"",email:""},status:0}
+        
     }
     else {
-         return {message:"your account doestnot exist",data:{user_id:"",email:""},status:0}
+        
     }
             
     }
