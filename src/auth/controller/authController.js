@@ -244,7 +244,9 @@ try {
     var respond = await authService.forgetPassword({email});
     if(respond.status=="1"){
         
-        let Link=`http://chirp.one/reset-password/${respond.data.user_id}`;
+        let Link=`Click on link below to reset your password\n 
+                http://chirp.one/reset-password/${respond.data.user_id}
+                if you dont want to reset your passowrd ignore this mail \n`;
              let mailResponse = await mail.sendMail(Link, email);
             res.status(200).send(respond)
     }else{
