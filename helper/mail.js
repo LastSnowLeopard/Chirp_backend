@@ -14,7 +14,7 @@ module.exports.sendMail= async function sendMail(msg,email) {
         let emailAdress=`${email}`
       
   var transporter = nodemailer.createTransport({
-    host: 'mx1.privateemail.com',
+    host: 'smtp.privateemail.com',
     port: 465,
     secure: true,
     auth: {
