@@ -92,6 +92,7 @@ exports.Login_get =async function (datas) {
                "message" : "Login Successfully",
                "Token" : accessToken,
                "user_id" : data[0].id,
+               "user_id1" : "",
                "full_name" : data[0].full_name,
                "email" : data[0].email
                },status:1}
@@ -119,6 +120,7 @@ exports.Login_get =async function (datas) {
 
     try{
     const [data] = await dbpool.query(sql);
+        creator.data.buiness_email=data[0].buiness_email
     creator.data.buiness_email=data[0].buiness_email
     creator.data.profile_image=data[0].profile_image
     creator.data.cover_image=data[0].cover_image

@@ -155,7 +155,7 @@ exports.getLogin = async (req, res) => {
         let respond = await authService.Login_get(req.body);
 
      
-
+console.log(respond)
         res.status(200).send({message: respond})
          
     } catch (error) {
