@@ -91,8 +91,7 @@ exports.Login_get =async function (datas) {
                return {message:"Login Successfully",data:{
                "message" : "Login Successfully",
                "Token" : accessToken,
-               "user_id" : data[0].id,
-               "user_id1" : "",
+               "user_id" : user_id,
                "full_name" : data[0].full_name,
                "email" : data[0].email
                },status:1}
