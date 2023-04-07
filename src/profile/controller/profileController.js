@@ -1,41 +1,93 @@
 
-const authService=require('../service/service');
+const profileService=require('../service/service');
 
 
 
 
 const mail = require('../../../helper/mail')
-exports.addTatoo = async (req, res) => {
 
-    let color_tone_id=req.body.color_tone_id;;
-    let user_id=req.body.user_id;
-    let added_by=req.body.account_type;
-    let tagged_user_id=req.body.tagged_user_id;
+exports.insertUpdateProfileImage = async (req, res) => {
 
-    let img1=req.body.img1 || "";
-    let img2=req.body.img2 || "";
-    let img3=req.body.img3|| "";
-    let img4=req.body.img4|| "";
-    let img5=req.body.img5|| "";
-
-    // let created_at=new Date().toISOString();
-    // let updated_at=new Date().toISOString();
-  
-    let tattoo_data={
-        color_tone_id,user_id,added_by,img1,img2,img3,img4,img5,tagged_user_id
+    let userId=req.body.userId;
+    let profileId=req.body.profileId;
+    let filename=req.body.profile_image;
+    let data={
+        userId,profileId,filename
     }
     
     try {
-        const respond = await authService.add_taatoo(tattoo_data);
-       
-      
-        
+        const respond = await profileService.createUpdateService(data);
+    
         res.status(200).send({ respond})     
     } catch (error) {
         console.log(error)
-        res.status(400).send({message:error.message});
+        res.status(500).send({message:error.message});
     }  
 }
+
+
+exports.deleteProfileImage = async (req, res) => {
+    let userId = req.body.userId;
+    let profileId = req.body.profileId;
+    
+    try {
+      const response = await profileService.deleteProfileImageService(userId, profileId);
+      res.status(200).send({ message: response.message, data: {}, status: response.status });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: error.message });
+    }
+  };
+
+
+exports.insertUpdateCoverImage = async (req, res) => {
+
+    let userId=req.body.userId;
+    let profileId=req.body.profileId;
+    let filename=req.body.cover_image;
+    let data={
+        userId,profileId,filename
+    }
+    
+    try {
+        const respond = await profileService.createUpdateCoverImageService(data);
+    
+        res.status(200).send({ respond})     
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({message:error.message});
+    }  
+}
+
+
+exports.deleteCoverImage = async (req, res) => {
+    let userId = req.body.userId;
+    let profileId = req.body.profileId;
+    
+    try {
+      const response = await profileService.deleteCoverImageService(userId, profileId);
+      res.status(200).send({ message: response.message, data: {}, status: response.status });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: error.message });
+    }
+  };
+
+
+exports.readProfileDataById = async (req, res) => {
+    let userId = req.body.userId;
+    
+    try {
+        const response = await profileService.readProfiledatabyIdService(userId);
+        res.status(200).send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+};
+
+
+
 
 
 

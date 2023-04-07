@@ -30,6 +30,11 @@ exports.registration_user = async function (data) {
                     const [fields] = await dbpool.query(sql)
                     console.log(fields.insertId);
                     if (fields.affectedRows >= 1) {
+
+                        let profileSql=`INSERT INTO profiles (user_id) VALUES (${fields.insertId});`;
+                        await dbpool.query(profileSql)
+                        console.log("profileSql",profileSql)
+
                         return {message:"User Registered Successfully",data:{user_id:fields.insertId},status:1}
                             }
                      else

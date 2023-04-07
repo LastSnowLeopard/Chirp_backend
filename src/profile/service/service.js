@@ -6,40 +6,24 @@ const dbpool=pool.promise();
 
 
 
+exports.createUpdateService = async function (data) {
+    const { userId,profileId,filename } = data;
 
-
-
-
-exports.add_taatoo = async function (data) {
-  
-    const {  color_tone_id,user_id,added_by,img1,img2,img3,img4,img5,tagged_user_id} = data;
-
-    creator_id='';
-
-    if(added_by=='user')  creator_id=tagged_user_id;
-
-    if(added_by=='creator')  creator_id=user_id;
-
-
-    var d = new Date();
-    d.setDate(d.getDate());
-    var dd = String(d.getDate());
-    var mm = String(d.getMonth() + 1); //January is 0!
-    var yyyy = d.getFullYear();
-    var today=yyyy+"/"+mm+"/"+dd;
-
+    let update=`UPDATE profiles SET profile_image_url = '${filename}' WHERE user_id = ${userId} AND profile_id=${profileId}`;
     try {
-        var sql = `insert into taatoos (user_id, color_tone_id, image1, image2, image3, image4, image5, added_by,tagged_user_id,creator_id,created_at)
-            values ('${user_id}','${color_tone_id}','${img1}','${img2}','${img3}','${img4}','${img5}','${added_by}','${tagged_user_id}','${creator_id}','${today}') `;
-        const [fields] = await dbpool.query(sql)
-        console.log(fields.insertId);
-        if (fields.affectedRows >= 1) {
-            return {message:"taatoots  added Successfully",data:{},status:1}
-                }
-            else
-        {
+        if(profileId=="" || profileId==null || profileId==undefined ){
             return  {message:"Error in data",data:{},status:0 }
-        }       
+
+        }else{
+            const [fields] = await dbpool.query(update)
+            if (fields.affectedRows >= 1) {
+                return {message:"Profile Image updated Successfully",data:{},status:1}
+                    }
+                else
+            {
+                return  {message:"Error in data",data:{},status:0 }
+            }
+        }     
     }
  
     catch (err) {
@@ -47,6 +31,98 @@ exports.add_taatoo = async function (data) {
         return err+"System Error";
     }
 };
+
+
+exports.deleteProfileImageService = async function (userId, profileId) {
+    let query = `UPDATE profiles SET profile_image_url = null WHERE user_id = ${userId} AND profile_id = ${profileId}`;
+  
+    try {
+      const [fields] = await dbpool.query(query);
+      
+      if (fields.affectedRows >= 1) {
+        return { message: "Profile image deleted successfully", status: 1 };
+      } else {
+        return { message: "Error in data", status: 0 };
+      }
+    } catch (err) {
+      console.error(err);
+      return err + "System Error";
+    }
+  };
+
+
+
+
+  
+exports.createUpdateCoverImageService = async function (data) {
+    const { userId,profileId,filename } = data;
+
+    let update=`UPDATE profiles SET cover_photo_url = '${filename}' WHERE user_id = ${userId} AND profile_id=${profileId}`;
+    try {
+        if(profileId=="" || profileId==null || profileId==undefined ){
+            return  {message:"Error in data",data:{},status:0 }
+
+        }else{
+            const [fields] = await dbpool.query(update)
+            if (fields.affectedRows >= 1) {
+                return {message:"Cover updated Successfully",data:{},status:1}
+                    }
+                else
+            {
+                return  {message:"Error in data",data:{},status:0 }
+            }
+        }     
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+
+
+exports.deleteCoverImageService = async function (userId, profileId) {
+    let query = `UPDATE profiles SET cover_photo_url = null WHERE user_id = ${userId} AND profile_id = ${profileId}`;
+  
+    try {
+      const [fields] = await dbpool.query(query);
+      
+      if (fields.affectedRows >= 1) {
+        return { message: "Cover image deleted successfully", status: 1 };
+      } else {
+        return { message: "Error in data", status: 0 };
+      }
+    } catch (err) {
+      console.error(err);
+      return err + "System Error";
+    }
+  };
+
+
+
+
+  
+exports.readProfiledatabyIdService = async function (userId) {
+    try {
+        const [rows] = await dbpool.query(
+            `SELECT * FROM profiles WHERE user_id = ${userId};`
+        );
+        
+        if (rows.length > 0) {
+
+            return { message: "Profile Found", data: rows[0], status: 1 };
+
+        } else {
+            return { message: "Profile data not Found", data: "", status: 0 };
+
+        }
+    } catch (error) {
+        console.error(error);
+        throw new Error("System error");
+    }
+};
+
 
 
 exports.archived_taatoo = async function (query) {
