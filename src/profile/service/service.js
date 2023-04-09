@@ -145,11 +145,11 @@ exports.readProfileDataByIdForEditProfileService = async function (userId) {
             );
             
             const [jobs] = await dbpool.query(
-                `SELECT work_id, user_id, company, position, city_town, from, to, description, currently_working_here, privacy, created_at, updated_at FROM work WHERE user_id= ${userId};`
+                'SELECT work_id, user_id, company, position, city_town, `from`, `to`, description, currently_working_here, privacy, created_at, updated_at FROM work WHERE user_id='+userId
             );
             
             const [education] = await dbpool.query(
-                `select education_id, user_id, college, from, to, graduated, concentration1, concentration2, concentration3, attended_for, degree, privacy, created_at, updated_at, education_level FROM education WHERE user_id= ${userId};`
+                'select education_id, user_id, college, `from`, `to`, graduated, concentration1, concentration2, concentration3, attended_for, degree, privacy, created_at, updated_at, education_level FROM education WHERE user_id= '+userId
             );
             
             return { message: "Profile Found", data: {"profile_data":rows[0],"user_hobbies":rows1,"user_education":education,"user_jobs":jobs }, status: 1 };
