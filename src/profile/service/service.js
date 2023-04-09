@@ -131,8 +131,8 @@ exports.readProfiledatabyIdService = async function (userId) {
 exports.readProfileDataByIdForEditProfileService = async function (userId) {
     try {
         const [rows] = await dbpool.query(
-            `SELECT *
-            FROM  profiles profile_id, user_id, profile_image_url, cover_photo_url, overview_text, lives_in, marital_status, country, followed_by, created_at, updated_at
+            `SELECT 
+               profile_id, user_id, profile_image_url, cover_photo_url, overview_text, lives_in, marital_status, country, followed_by, created_at, updated_at from profiles
             WHERE user_id = ${userId};`
         );
         
