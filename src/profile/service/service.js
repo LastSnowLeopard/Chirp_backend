@@ -106,7 +106,9 @@ exports.deleteCoverImageService = async function (userId, profileId) {
 exports.readProfiledatabyIdService = async function (userId) {
     try {
         const [rows] = await dbpool.query(
-            `SELECT * FROM profiles WHERE user_id = ${userId};`
+            `SELECT p.*, (SELECT COUNT(*) FROM friends WHERE user_id = p.user_id) AS total_friends
+            FROM profiles p
+            WHERE user_id = ${userId};`
         );
         
         if (rows.length > 0) {
@@ -123,6 +125,37 @@ exports.readProfiledatabyIdService = async function (userId) {
     }
 };
 
+
+
+
+exports.readProfileDataByIdForEditProfileService = async function (userId) {
+    try {
+        const [rows] = await dbpool.query(
+            `SELECT *
+            FROM profiles 
+            WHERE user_id = ${userId};`
+        );
+        
+        if (rows.length > 0) {
+
+            const [rows1] = await dbpool.query(
+                `SELECT *
+                FROM user_hobbies 
+                WHERE user_id = ${userId};`
+            );
+            
+
+            return { message: "Profile Found", data: {"profile_data":rows[0],"user_hobbies":rows1 }, status: 1 };
+
+        } else {
+            return { message: "Profile data not Found", data: "", status: 0 };
+
+        }
+    } catch (error) {
+        console.error(error);
+        throw new Error("System error");
+    }
+};
 
 
 exports.archived_taatoo = async function (query) {

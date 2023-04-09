@@ -14,6 +14,11 @@ route.delete('/delete-cover-image', profileController.deleteCoverImage);
 
 route.post('/read-profile-data-by-id', profileController.readProfileDataById);
 
+route.post('/read-profile-data-by-id-for-edit-profile', profileController.readProfileDataByIdForEditProfile);
+
+
+
+
 
 // route.post('/add-taattos',upload.fields([{name: 'img1'}, {name: 'img2'},{name: 'img3'}, {name: 'img4'},{name: 'img5'}]),tattooController.addTatoo)
 // route.post('/archive-taatoo',upload.fields([{name: 'img1'}, {name: 'img2'},{name: 'img3'}, {name: 'img4'},{name: 'img5'}]),tattooController.archiveTatoo)

@@ -91,6 +91,23 @@ exports.readProfileDataById = async (req, res) => {
 
 
 
+exports.readProfileDataByIdForEditProfile = async (req, res) => {
+    let userId = req.body.userId;
+    
+    try {
+        const response = await profileService.readProfileDataByIdForEditProfileService(userId);
+        res.status(200).send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+};
+
+
+
+
+
+
 
 exports.archiveTatoo = async (req, res) => {
     let tatoo_id=req.body.tatoo_id;
