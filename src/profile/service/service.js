@@ -132,7 +132,7 @@ exports.readProfileDataByIdForEditProfileService = async function (userId) {
     try {
         const [rows] = await dbpool.query(
             `SELECT *
-            FROM profiles 
+            FROM profile_id, user_id, profile_image_url, cover_photo_url, overview_text, lives_in, marital_status, country, followed_by, created_at, updated_at
             WHERE user_id = ${userId};`
         );
         
@@ -144,8 +144,15 @@ exports.readProfileDataByIdForEditProfileService = async function (userId) {
                 WHERE user_id = ${userId};`
             );
             
-
-            return { message: "Profile Found", data: {"profile_data":rows[0],"user_hobbies":rows1 }, status: 1 };
+            const [jobs] = await dbpool.query(
+                `SELECT work_id, user_id, company, position, city_town, from, to, description, currently_working_here, privacy, created_at, updated_at FROM work WHERE user_id= ${userId};`
+            );
+            
+            const [education] = await dbpool.query(
+                `select education_id, user_id, college, from, to, graduated, concentration1, concentration2, concentration3, attended_for, degree, privacy, created_at, updated_at, education_level FROM education WHERE user_id= ${userId};`
+            );
+            
+            return { message: "Profile Found", data: {"profile_data":rows[0],"user_hobbies":rows1,"user_education":education,"user_jobs":jobs }, status: 1 };
 
         } else {
             return { message: "Profile data not Found", data: "", status: 0 };
