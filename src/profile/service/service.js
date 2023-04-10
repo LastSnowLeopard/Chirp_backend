@@ -132,7 +132,7 @@ exports.readProfileDataByIdForEditProfileService = async function (userId) {
     try {
         const [rows] = await dbpool.query(
             `SELECT 
-               profile_id, user_id, profile_image_url, cover_photo_url, overview_text, lives_in, marital_status, country, followed_by, created_at, updated_at from profiles
+               profile_id, user_id, profile_image_url, cover_photo_url, overview_text as bio, lives_in, marital_status, country, followed_by, created_at, updated_at from profiles
             WHERE user_id = ${userId};`
         );
         
@@ -141,6 +141,7 @@ exports.readProfileDataByIdForEditProfileService = async function (userId) {
             const [rows1] = await dbpool.query(
                 `SELECT *
                 FROM user_hobbies 
+                inner join hobby_list on user_hobbies.public_hobby_id=hobby_list.hobby_id
                 WHERE user_id = ${userId};`
             );
             
@@ -151,6 +152,8 @@ exports.readProfileDataByIdForEditProfileService = async function (userId) {
             const [education] = await dbpool.query(
                 'select education_id, user_id, college, `from`, `to`, graduated, concentration1, concentration2, concentration3, attended_for, degree, privacy, created_at, updated_at, education_level FROM education WHERE user_id= '+userId
             );
+
+
             
             return { message: "Profile Found", data: {"profile_data":rows[0],"user_hobbies":rows1,"user_education":education,"user_jobs":jobs }, status: 1 };
 
@@ -163,6 +166,108 @@ exports.readProfileDataByIdForEditProfileService = async function (userId) {
         throw new Error("System error");
     }
 };
+
+
+
+
+
+
+
+exports.addBioInProfileService = async function (userId,profileId,bio,overview_text_privacy) {
+    let query = `UPDATE profiles SET overview_text ='${bio}',overview_text_privacy='${overview_text_privacy}' WHERE user_id = ${userId} AND profile_id = ${profileId}`;
+  
+    try {
+      const [fields] = await dbpool.query(query);
+      
+      if (fields.affectedRows >= 1) {
+        return { message: "Update Bio successfully", status: 1 };
+      } else {
+        return { message: "Error in data", status: 0 };
+      }
+    } catch (err) {
+      console.error(err);
+      return err + "System Error";
+    }
+}
+
+
+
+
+exports.addHobbiesInProfileService = async function (data) {
+
+    let query=``;
+
+     try {
+        for (const item of data) {
+            const { userId, public_hobby_id, hobby_name } = item;
+    
+            query =  `INSERT INTO user_hobbies (user_id, public_hobby_id, hobby_name)
+            SELECT ${userId}, ${public_hobby_id}, '${hobby_name}'
+            WHERE NOT EXISTS (SELECT 1 FROM user_hobbies WHERE user_id = ${userId} AND public_hobby_id = ${public_hobby_id});
+            `
+            await dbpool.query(query);
+    
+        }
+        
+
+      if ( true) {
+        return { message: "Hobbies inserted", status: 1 };
+      } else {
+        return { message: "Error in data", status: 0 };
+      }
+    } catch (err) {
+      console.error(err);
+      return err + "System Error";
+    }
+}
+
+
+
+exports.deleteHobbiesInProfileService = async function (data) {
+    let query=``;
+
+    try {
+     
+        
+           query =  `Delete from user_hobbies 
+           WHERE hobby_id IN (${data})
+           `
+           const [] =await dbpool.query(query);
+
+            return 1;
+    } catch (err) {
+        console.error(err);
+        return err + "System Error";
+    }
+
+}
+
+
+exports.getHobbyProfileService = async function (user_id) {
+  
+    try {
+
+      
+       
+        const [data] = await dbpool.query(`SELECT * FROM user_hobbies WHERE user_id = ${user_id}`)
+    
+        if (data.length >= 0) {
+            return {message:"hobbies list of user",data:{hobbies:data},status:1}
+        }
+                
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+
+
+
+
+
 
 
 exports.archived_taatoo = async function (query) {

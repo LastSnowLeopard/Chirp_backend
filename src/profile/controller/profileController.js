@@ -104,7 +104,70 @@ exports.readProfileDataByIdForEditProfile = async (req, res) => {
 };
 
 
+exports.readProfileDataByIdForEditProfile = async (req, res) => {
+    let userId = req.body.userId;
+    
+    try {
+        const response = await profileService.readProfileDataByIdForEditProfileService(userId);
+        res.status(200).send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+};
 
+
+exports.addBioInProfile = async (req, res) => {
+    let userId = req.body.userId;
+    let profileId = req.body.profileId;
+    let bio = req.body.bio;
+    let overview_text_privacy=req.body.overview_text_privacy
+    
+    try {
+        const response = await profileService.addBioInProfileService(userId,profileId,bio,overview_text_privacy);
+        res.status(200).send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+};
+
+
+exports.addHobbies = async (req, res) => {
+    
+    let hobbiesData=req.body.hobbiesData;
+    let hobby_deletion_ids=req.body.hobby_deletion_ids;
+
+
+    try {
+
+        const response = await profileService.addHobbiesInProfileService(hobbiesData);
+        if(hobby_deletion_ids.length>0)
+         await profileService.deleteHobbiesInProfileService(hobby_deletion_ids);
+
+        res.status(200).send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+};
+
+
+
+
+
+exports.getUserHobbies = async (req, res) => {
+    let userId = req.body.userId;
+ 
+    
+    try {
+        const response = await profileService.getHobbyProfileService(userId);
+        res.status(200).send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+};
 
 
 
