@@ -22,6 +22,6 @@ route.post('/add-user-hobbies', profileController.addHobbies);
 
 route.post('/get-user-hobbies', profileController.getUserHobbies);
 
-
+route.post('/get-friends-list', profileController.getFriendsList);
 
 module.exports = route

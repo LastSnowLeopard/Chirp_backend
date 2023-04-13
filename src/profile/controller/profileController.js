@@ -172,6 +172,29 @@ exports.getUserHobbies = async (req, res) => {
 
 
 
+
+
+exports.getFriendsList = async (req, res) => {
+    let data={
+        page:req.body.page,
+        filter:req.body.filter, // all  city country education
+        pageSize:req.body.pageSize,
+        userId : req.body.userId,
+        profileId : req.body.profileId,
+    };
+    
+    try {
+        const response = await profileService.getFriendsListService(data);
+        res.status(200).send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+};
+
+
+
+
 exports.archiveTatoo = async (req, res) => {
     let tatoo_id=req.body.tatoo_id;
 
