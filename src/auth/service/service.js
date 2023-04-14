@@ -91,7 +91,7 @@ exports.Login_get =async function (datas) {
                 let getImage=`SELECT profile_image_url FROM profiles WHERE user_id = ${user_id}`;
                 const [data1] = await dbpool.query(getImage); 
                 let image_url=``;
-                if(data1.affectedRows>=1){
+                if(data1.length>=1){
 
                     image_url=data1[0].profile_image_url;
                 }
