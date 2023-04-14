@@ -72,7 +72,7 @@ exports.Login_get =async function (datas) {
    
        if(data.length==0 || data[0].account_status=='deleted')
        {
-         return "Account Not Exist"
+         return {message:"Account Not Exist",data:{user_id:""},status:0}
        } 
        else {
            const match = await bcrypt.compare(password, data[0].password);
@@ -88,12 +88,13 @@ exports.Login_get =async function (datas) {
                const [fields] = await dbpool.query(sql1);  
                if(fields.affectedRows>=1){
                
-               return {message:"Login Successfully",data:{
-               "message" : "Login Successfully",
-               "Token" : accessToken,
-               "user_id" : user_id,
-               "full_name" : data[0].full_name,
-               "email" : data[0].email
+               return {
+                        "message":"Login Successfully",data:{
+                        "message" : "Login Successfully",
+                        "Token" : accessToken,
+                        "user_id" : user_id,
+                        "full_name" : data[0].full_name,
+                        "email" : data[0].email
                },status:1}
                 }
                 else
