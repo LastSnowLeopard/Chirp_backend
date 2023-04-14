@@ -156,7 +156,7 @@ exports.getLogin = async (req, res) => {
 
      
 console.log(respond)
-        res.status(200).send({message: respond})
+        res.status(200).send(respond)
          
     } catch (error) {
       res.status(500).send({message:error.message})  
