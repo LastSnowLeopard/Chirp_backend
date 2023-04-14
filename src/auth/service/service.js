@@ -87,6 +87,15 @@ exports.Login_get =async function (datas) {
                // console.log(sql1)
                const [fields] = await dbpool.query(sql1);  
                if(fields.affectedRows>=1){
+
+                let getImage=`SELECT profile_image_url FROM profiles WHERE user_id = ${user_id}`;
+                const [data1] = await dbpool.query(getImage); 
+                let image_url=``;
+                if(data1.affectedRows>=1){
+
+                    image_url=data1[0].profile_image_url;
+                }
+
                
                return {
                         "message":"Login Successfully",data:{
@@ -94,7 +103,8 @@ exports.Login_get =async function (datas) {
                         "Token" : accessToken,
                         "user_id" : user_id,
                         "full_name" : data[0].full_name,
-                        "email" : data[0].email
+                        "email" : data[0].email,
+                        "profile_image_url":image_url || ""
                },status:1}
                 }
                 else
