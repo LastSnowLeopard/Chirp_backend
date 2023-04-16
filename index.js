@@ -12,7 +12,7 @@ app.use(express.json({limit: '100mb'}));
 // import routes
 const AuthRoutes = require('./src/auth/routes')
 const ProfileRoutes = require('./src/profile/routes')
-const GetData = require('./src/getData/routes')
+const GetData = require('./src/getdata/routes')
 const Posts = require('./src/posts/routes')
 
 
