@@ -40,3 +40,41 @@ exports.getHobbyListService = async () => {
 
 }
 
+
+exports.getEventListService = async () => {
+  try {
+    var sql1 = `select * from event_list`;
+    const [data] = await dbpool.query(sql1);  
+    if(data.length>0){
+      return {message:"Data List Found",data:data,status:1}
+    }else{
+      return {message:"",data:{user_id:""},status:0}
+    }
+
+} catch (error) {
+  throw error;
+}
+
+}
+
+
+exports.getFeelingListService = async () => {
+  try {
+    var sql1 = `select * from feelings_list`;
+    const [data] = await dbpool.query(sql1);  
+    if(data.length>0){
+      return {message:"Data List Found",data:data,status:1}
+    }else{
+      return {message:"",data:{user_id:""},status:0}
+    }
+
+} catch (error) {
+  throw error;
+}
+
+
+}
+
+
+
+

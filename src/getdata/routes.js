@@ -10,4 +10,7 @@ route.post('/add-hobby-in-list',dataController.addHobbyInList)
 
 route.get('/get-hobby-list',dataController.getHobbyList)
 
+route.get('/get-events-list',dataController.getEventList)
+route.get('/get-feelings-list',dataController.getFeelingList)
+
 module.exports = route

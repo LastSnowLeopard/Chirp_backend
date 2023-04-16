@@ -12,9 +12,8 @@ app.use(express.json({limit: '50mb'}));
 // import routes
 const AuthRoutes = require('./src/auth/routes')
 const ProfileRoutes = require('./src/profile/routes')
-const GetData = require('./src/getdata/routes')
-
-
+const GetData = require('./src/getData/routes')
+const Posts = require('./src/posts/routes')
 
 
 app.use(cors())
@@ -47,7 +46,7 @@ app.use(express.static(__dirname + 'uploads')); //Serves resources from public f
 app.use("/api/auth", AuthRoutes) 
 app.use("/api/profile", ProfileRoutes) 
 app.use("/api/get-data", GetData) 
-
+app.use("/api/post", Posts) 
 
 app.use((req, res, error) => {
   res.status(404).send("No Route Found")

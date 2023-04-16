@@ -1,9 +1,6 @@
 
 const profileService=require('../service/service');
 
-
-
-
 const mail = require('../../../helper/mail')
 
 exports.insertUpdateProfileImage = async (req, res) => {
