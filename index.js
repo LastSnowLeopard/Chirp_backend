@@ -5,7 +5,7 @@ var cors = require('cors')
 require("dotenv").config();
 
 // parse requests of content-type - application/json
-app.use(express.json({limit: '50mb'}));
+app.use(express.json({limit: '100mb'}));
 // app.use(express.static(path.join(__dirname, 'uploads')))
 
 
@@ -48,6 +48,6 @@ app.use("/api/profile", ProfileRoutes)
 app.use("/api/get-data", GetData) 
 app.use("/api/post", Posts) 
 
-app.use((req, res, error) => {
+app.use((req, res, error) => { 
   res.status(404).send("No Route Found")
 })
