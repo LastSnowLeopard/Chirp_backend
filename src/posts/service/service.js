@@ -55,7 +55,8 @@ exports.getPostListService = async function (data) {
         var sql =  `SELECT 
         posts.post_id, 
         posts.total_likes, 
-        posts.user_id, 
+        posts.user_id,
+        users.full_name, 
         posts.content, 
         posts.location, 
         posts.location_lat_lng, 
@@ -75,10 +76,11 @@ exports.getPostListService = async function (data) {
           ELSE 0 
         END AS is_liked
       FROM posts
+      LEFT JOIN users ON posts.user_id = users.user_id 
       LEFT JOIN likes ON posts.post_id = likes.post_id 
       LEFT JOIN feelings_list ON feelings_list.feelings_id = posts.feeling_id
       LEFT JOIN event_list ON event_list.event_id = posts.life_event_id  
-      WHERE posts.user_id = '${data.userId}' AND deleted = '0' 
+      WHERE (posts.user_id = '${data.userId}' OR posts.tagged_user_ids like '%${data.userId}%' ) AND deleted = '0' 
       LIMIT ${data.pageSize} OFFSET ${(data.page - 1) * data.pageSize}
       `;
 

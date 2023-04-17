@@ -59,7 +59,7 @@ exports.getPostById = async (req, res) => {
     try {
         const response = await postService.getPostListService(data);
         response.tagged_user=[];
-        response.tagged_user=[];
+
         if(response.posts.length > 0){
             for (let i = 0; i < response.posts.length; i++) {
 
