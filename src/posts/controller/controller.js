@@ -103,3 +103,24 @@ try {
 }
 
 }
+
+
+
+getUsrFriendsByUserid = async (req, res) => {
+    let user_id=req.body.user_id;
+
+try {
+    const respond = await postService.getFriendsbyIdService(user_id);
+    if(respond.status=="1"){
+
+            res.status(200).send(respond)
+    }else{
+        res.status(200).send(respond)
+    }
+
+}catch(e){
+    console.log(e);
+}
+
+
+}

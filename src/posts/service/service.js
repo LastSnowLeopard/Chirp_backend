@@ -230,3 +230,31 @@ exports.likepost_service = async function (post_id,user_id) {
           
 
  };
+
+
+
+ 
+exports.getFriendsbyIdService = async function (user_id) {
+    try {
+        var sql =  `SELECT friends.user_id as id, friends.friend_user_id as friend_id, users.full_name as friend_name,profiles.profile_image_url as friend_profile_image 
+                    FROM friends LEFT JOIN users on friends.friend_user_id=users.user_id LEFT JOIN profiles on friends.friend_user_id=profiles.user_id 
+                    WHERE friends.status="accepted" and friends.user_id=${user_id};`;
+
+        const [fields] = await dbpool.query(sql)
+
+        if (fields.length >= 0) {
+
+
+            return fields;
+                }
+            else
+        {
+            return  fields
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
