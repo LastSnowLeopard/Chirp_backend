@@ -106,8 +106,8 @@ try {
 
 
 
-getUsrFriendsByUserid = async (req, res) => {
-    let user_id=req.body.user_id;
+exports.getUsrFriendsByUserid = async (req, res) => {
+    let user_id=req.body.userId;
 
 try {
     const respond = await postService.getFriendsbyIdService(user_id);
