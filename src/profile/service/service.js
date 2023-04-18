@@ -271,22 +271,20 @@ exports.getFriendsListService = async function (data) {
         query=``;
     }
 
-    try {
-        
+    
 
-        var sql = `SELECT friends.friend_id as id, friends.friend_user_id as friend_id, users.full_name, profiles.profile_image_url,
-        profiles.cover_photo_url FROM friends INNER JOIN users ON users.user_id = friends.friend_user_id OR friends.user_id=users.user_id inner JOIN profiles ON
-        profiles.user_id=friends.friend_user_id WHERE (friends.user_id = ${data.userId} OR friends.friend_user_id = ${data.userId}) 
-        AND friends.status = 'accepted' LIMIT ${data.pageSize} OFFSET ${(data.page-1) * data.pageSize}`;
+    try {
+        var sql = `SELECT friends.user_id as id, friends.friend_user_id as friend_id, users.full_name,profiles.profile_image_url 
+        FROM friends LEFT JOIN users on friends.friend_user_id=users.user_id LEFT JOIN profiles on friends.friend_user_id=profiles.user_id 
+        WHERE friends.status="accepted" and friends.user_id=${data.userId} LIMIT ${data.pageSize} OFFSET ${(data.page-1) * data.pageSize}`;
        console.log(sql);
         const [fields] = await dbpool.query(sql)
         console.log(fields);
 
         if (fields.length >= 0) {
 
-         var sql1 = `SELECT count(*) FROM friends INNER JOIN users ON users.user_id = friends.friend_user_id OR friends.user_id=users.user_id inner JOIN profiles ON
-         profiles.user_id=friends.friend_user_id WHERE (friends.user_id = ${data.userId} OR friends.friend_user_id = ${data.userId}) 
-         AND friends.status = 'accepted'`;
+         var sql1 = `SELECT count(*) FROM friends LEFT JOIN users on friends.friend_user_id=users.user_id LEFT JOIN profiles on friends.friend_user_id=profiles.user_id 
+         WHERE friends.status="accepted" and friends.user_id=${data.userId}`;
         const [field] = await dbpool.query(sql1);
             return {message:"data fetched",data:fields,total_page:Math.ceil(field[0]['count(*)']/data.pageSize),pageno:data.page,status:1}
                 }
