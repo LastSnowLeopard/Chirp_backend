@@ -159,6 +159,83 @@ exports.getMediaPostService = async function (post_id) {
 };
 
 
+
+exports.getMediaPostCommentsandRepliesService = async function (post_id) {
+    try {
+        var sql =  `SELECT c.comment_id, c.post_id, c.user_id, u1.full_name AS user_name, p1.profile_image_url AS user_profile_image,
+        c.content, c.created_at, r.reply_id, r.comment_id as reply_comment_id, r.user_id as reply_user_id, 
+        u2.full_name AS reply_user_name, p2.profile_image_url AS reply_user_profile_image, r.content as reply_content, 
+        r.created_at as reply_created_at 
+FROM comments c 
+LEFT JOIN comment_replies r ON c.comment_id = r.comment_id 
+JOIN users u1 ON c.user_id = u1.user_id 
+LEFT JOIN users u2 ON r.user_id = u2.user_id 
+LEFT JOIN profiles p1 ON c.user_id = p1.user_id 
+LEFT JOIN profiles p2 ON r.user_id = p2.user_id 
+WHERE c.post_id = ${post_id}
+ORDER BY c.comment_id ASC, r.created_at ASC
+
+
+`;
+
+        const [results] = await dbpool.query(sql)
+
+        if (results.length >= 0) {
+            const comments = {};
+
+            results.forEach(row => {
+              const commentId = row.comment_id;
+          
+              // If this is the first time we're encountering this comment ID, add it to the comments object
+              if (!comments[commentId]) {
+                comments[commentId] = {
+                  comment_id: commentId,
+                  post_id: row.post_id,
+                  user_id: row.user_id,
+                  content: row.content,
+                  user_name: row.user_name,
+                  user_profile_image: row.user_profile_image,
+                  created_at: row.created_at,
+                  replies: []
+                };
+              }
+          
+              // If there is a reply for this row, add it to the current comment's replies array
+              if (row.reply_id) {
+                comments[commentId].replies.push({
+                  reply_id: row.reply_id,
+                  comment_id: row.reply_comment_id,
+                  user_id: row.reply_user_id,
+                  user_name: row.reply_user_name,
+                  user_profile_image: row.reply_user_profile_image,
+                  content: row.reply_content,
+                  created_at: row.reply_created_at
+                });
+              }
+            });
+          
+            // Convert the comments object to an array of comment objects
+            const commentArray = Object.values(comments);
+
+            return commentArray;
+           
+                }
+            else
+        {
+            return  results;
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+
+
+
+
 exports.likepost_service = async function (post_id,user_id) {
     
     var sql = `SELECT * FROM likes WHERE user_id='${user_id}'  AND post_id='${post_id}'`;
@@ -258,3 +335,45 @@ exports.getFriendsbyIdService = async function (user_id) {
         return err+"System Error";
     }
 };
+
+
+
+
+exports.createCommentService = async function (comment ) {
+
+    const query = `INSERT INTO comments ( post_id, user_id, content) 
+               VALUES ( ${comment.post_id}, ${comment.user_id}, '${comment.content}')`;
+    try {
+        console.log(query);
+        const [fields] = await dbpool.query(query);
+        
+        console.log(fields.insertId);
+        return fields.insertId;
+    }catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+    
+    
+    
+    }
+
+
+    exports.createRepliesService = async function (reply ) {
+        const { comment_id, post_id, user_id, content } = reply;
+        const query = `INSERT INTO comment_replies (comment_id, post_id, user_id, content) 
+               VALUES ('${comment_id}', '${post_id}', '${user_id}', '${content}')`;
+        try {
+            console.log(query);
+            const [fields] = await dbpool.query(query);
+
+            console.log(fields.insertId);
+            return fields.insertId;
+        }catch (err) {
+            console.error(err)
+            return err+"System Error";
+        }
+
+
+
+}

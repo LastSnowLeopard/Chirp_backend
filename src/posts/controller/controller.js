@@ -68,6 +68,12 @@ exports.getPostById = async (req, res) => {
                 }
                 response.posts[i].media = await postService.getMediaPostService(response.posts[i].post_id);
 
+                response.posts[i].commets = await postService.getMediaPostCommentsandRepliesService(response.posts[i].post_id);
+
+
+
+
+
             }
 
         }
@@ -122,5 +128,61 @@ try {
     console.log(e);
 }
 
+
+}
+
+
+
+
+
+exports.createComments = async (req, res) => {
+    
+    let comment = {
+        post_id: req.body.post_id,
+        user_id: req.body.userId,
+        content: req.body.content,
+        created_at: new Date()
+      };
+
+try {
+    const respond = await postService.createCommentService(comment);
+    if(respond>"1"){
+
+        res.status(200).send({message:"Comment Created Successfully",data:{},status: 1})
+    }else{
+        res.status(200).send({message:"Comment not Created Successfully",data:{},status: 0})
+    }
+
+}catch(e){
+    res.status(500).send({message:"Server Error",data:{},status: 0})
+}
+}
+
+
+exports.createReplies = async (req, res) => {
+    let reply = {
+        comment_id: req.body.comment_id,
+        user_id: req.body.userId,
+        post_id: req.body.post_id,
+        content: req.body.content,
+        created_at: new Date()
+
+
+      };
+    
+    
+      try {
+        const respond = await postService.createRepliesService(reply);
+        if(respond>"0"){
+    
+            res.status(200).send({message:"Reply Created Successfully",data:{},status: 1})
+
+        }else{
+            res.status(200).send({message:"Reply not Created Successfully",data:{},status: 0})
+        }
+    
+    }catch(e){
+        res.status(500).send({message:"Reply Created Successfully",data:{},status: 1})
+    }
 
 }

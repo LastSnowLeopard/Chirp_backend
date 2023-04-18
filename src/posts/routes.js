@@ -10,6 +10,10 @@ router.post('/create-post',  saveMediaFiles.uploadFiles, postController.createPo
 router.post('/get-post-by-id',   postController.getPostById);
 router.post('/like-post',postController.likePost)
 router.post('/get-friends-by-userid',postController.getUsrFriendsByUserid);
+router.post('/create-comments',postController.createComments);
+router.post('/create-replies',postController.createReplies);
+
+
 
 
 
