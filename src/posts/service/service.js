@@ -111,7 +111,10 @@ exports.getPostListService = async function (data) {
 
 exports.getTaggedUsersDataService = async function (tagged_user_id_array) {
     try {
-        var sql =  `SELECT user_id,full_name FROM users WHERE user_id IN (${tagged_user_id_array})`;
+        var sql =  `SELECT u.user_id, u.full_name, p.profile_image_url
+        FROM users u
+        LEFT JOIN profiles p ON u.user_id = p.user_id        
+         WHERE user_id IN (${tagged_user_id_array})`;
 
         const [fields] = await dbpool.query(sql)
 
