@@ -318,3 +318,45 @@ exports.addLanguage = async (req, res) => {
       res.status(500).send({ message: error.message });
     }
   };
+
+
+
+  
+
+
+exports.getPhotos = async (req, res) => {
+    // Read input values from req.body
+    const { user_id,type } = req.body;
+    try {
+      // Call the service function to insert the data
+      const response = await profileService.getPhotoService({  user_id,type});
+      // Return a response to the client based on the result
+      if (response.length > 0) {
+        res.status(200).send({ message: "User Images", status: 1, data:  response  });
+      } else {
+        res.status(200).send({ message: "no Data found", status: 0, data: {} });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: error.message });
+    }
+  };
+
+  
+exports.getvideos = async (req, res) => {
+    // Read input values from req.body
+    const { user_id,type } = req.body;
+    try {
+      // Call the service function to insert the data
+      const response = await profileService.getvideoService({  user_id,type });
+      // Return a response to the client based on the result
+      if (response.length > 0) {
+        res.status(200).send({ message: "Data Media", status: 1, data: { response } });
+      } else {
+        res.status(200).send({ message: "No Data Found", status: 0, data: {} });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: error.message });
+    }
+  };

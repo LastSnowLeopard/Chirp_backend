@@ -38,6 +38,9 @@ route.post('/get-about-section', profileController.getAboutSection);
 
 route.post('/add-language', profileController.addLanguage);
 
+route.post('/get-photos', profileController.getPhotos);
+route.post('/get-videos', profileController.getvideos);
+
 
 
 
