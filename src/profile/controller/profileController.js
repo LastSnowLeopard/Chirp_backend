@@ -208,8 +208,6 @@ exports.addWork = async (req, res) => {
 
 exports.addEducation = async (req, res) => {
     const { user_id, institute_name, from_date, to_date, is_graduated, degree, privacy } = req.body;
-
-    
     try {
         var response = await profileService.addEducationService({user_id, institute_name, from_date, to_date, is_graduated, degree, privacy});
         if(response>=0)
@@ -221,6 +219,22 @@ exports.addEducation = async (req, res) => {
         res.status(500).send({ message: error.message });
     }  
 };
+
+exports.addEvent = async (req, res) => {
+    const { user_id, institute_name, from_date, to_date, is_graduated, degree, privacy } = req.body;
+    try {
+        var response = await profileService.addEventService({user_id, institute_name, from_date, to_date, is_graduated, degree, privacy});
+        if(response>=0)
+            res.status(200).send({message:"Education added successfully",status:1,data:{response}});
+        else
+            res.status(200).send({message:"Education not added successfully",status:0,data:{}});
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+};
+
+
 
 
 exports.addPlacedLived = async (req, res) => {
@@ -267,6 +281,11 @@ exports.getAboutSection = async (req, res) => {
         data.placesLived=placesLived;
         var RelationShip = await profileService.getRelationshipService({user_id});
         data.RelationShip=RelationShip;
+        var EventService = await profileService.getEventsService({user_id});
+        data.EventService=EventService;
+
+
+    
         res.status(200).send({message:"About Data data",status:1,data});
        
     } catch (error) {

@@ -28,6 +28,8 @@ route.post('/add-work', profileController.addWork);
 
 route.post('/add-education', profileController.addEducation);
 
+route.post('/add-event', profileController.addEvent);
+
 route.post('/place-lived', profileController.addPlacedLived);
 
 route.post('/add-relation', profileController.addRelationShip);

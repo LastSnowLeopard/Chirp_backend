@@ -345,8 +345,6 @@ exports.addPlacedliveService = async function (data) {
     }
     
 
-
-
 exports.getEducationService = async function (data) {
     const {user_id}=data;
     const query = `select * from education where user_id='${user_id}'`;
@@ -380,9 +378,30 @@ exports.getPlaceLivedService = async function (data) {
     
 exports.getRelationshipService = async function (data) {
     const {user_id}=data;
-    const query = `select * from family where user_id='${user_id}'
-                    inner join users on family.relation_person_id=users.user_id where user_id='${user_id}'`;
+    const query = `select family.user_id,
+    family.relationship,
+    family.relation_person_id,
+    family.privacy,
+    family.created_at,
+    users.full_name,
+    profiles.profile_image_url
+    from family
+    left join users on family.relation_person_id=users.user_id
+    left join profiles on family.relation_person_id=users.user_id
+    where family.user_id='${user_id}'`;
     console.log(query);
+    const [fields] = await dbpool.query(query);
+    
+    return fields;
+    
+    }
+exports.getEventsService = async function (data) {
+    const {user_id}=data;
+    const query = `SELECT posts.post_id,posts.user_id,posts.life_event_id,posts.created_at,posts.updated_at,posts.post_type,
+    event_list.event_name,event_list.event_icon_url
+    FROM posts 
+    INNER JOIN event_list on posts.life_event_id=event_list.event_id
+    WHERE posts.user_id=${user_id} AND posts.post_type="event"`;
     const [fields] = await dbpool.query(query);
     
     return fields;
@@ -391,6 +410,5 @@ exports.getRelationshipService = async function (data) {
     
 
     
-
     
 
