@@ -461,8 +461,45 @@ exports.getbasicInfoService1 = async function (data) {
     
     }
         
+exports.getPhotoService = async function (data) {
+    const {user_id,type}=data;
+    let query = ``;
+    if(type=="tagged")
+        query=`SELECT users.full_name,post_media.media_id,post_media.media_url,post_media.media_type,posts.total_likes,posts.user_id,posts.content FROM posts 
+        INNER JOIN post_media on posts.post_id=post_media.post_id
+        left join users on posts.user_id=users.user_id
+        WHERE posts.tagged_user_ids like '%${user_id}%' AND post_media.media_type='image'`;
+    else
+        query=`SELECT users.full_name,post_media.media_id,post_media.media_url,post_media.media_type,posts.total_likes,posts.user_id,posts.content FROM posts 
+            INNER JOIN post_media on posts.post_id=post_media.post_id
+            left join users on posts.user_id=users.user_id
+            WHERE posts.user_id=${user_id}' AND post_media.media_type="image"`;
+        console.log(query);
+    const [fields] = await dbpool.query(query);
     
+    return fields;
     
+    }
+
+exports.getvideoService = async function (data) {
+    const {user_id,type}=data;
+    let query = ``;
+    if(type=="tagged")
+    query=`SELECT users.full_name,post_media.media_id,post_media.media_url,post_media.media_type,posts.total_likes,posts.user_id,posts.content FROM posts 
+    INNER JOIN post_media on posts.post_id=post_media.post_id
+    left join users on posts.user_id=users.user_id
+    WHERE posts.tagged_user_ids like '%${user_id}%' AND post_media.media_type='video'`;
+    else
+    query=`SELECT users.full_name,post_media.media_id,post_media.media_url,post_media.media_type,posts.total_likes,posts.user_id,posts.content FROM posts 
+        INNER JOIN post_media on posts.post_id=post_media.post_id
+        left join users on posts.user_id=users.user_id
+        WHERE posts.user_id=${user_id}' AND post_media.media_type='video'`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
     
+    return fields;
     
+    }
+
+
 
