@@ -447,6 +447,20 @@ exports.getbasicInfoService = async function (data) {
     return fields;
     
     }
+
+exports.getbasicInfoService1 = async function (data) {
+    const {user_id}=data;
+    const query = `select contact_number,
+                    primary_email,
+                    secondary_email
+                     from users where user_id='${user_id}'`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    
+    return fields;
+    
+    }
+        
     
     
     

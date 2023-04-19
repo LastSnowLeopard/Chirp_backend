@@ -287,6 +287,8 @@ exports.getAboutSection = async (req, res) => {
         data.Languages=LanguagesService;
         var BasicInfoService = await profileService.getbasicInfoService({user_id});
         data.BasicInfo=BasicInfoService;
+        var BasicInfoService1 = await profileService.getbasicInfoService1({user_id});
+        data.BasicInfo=BasicInfoService1;
 
 
 
