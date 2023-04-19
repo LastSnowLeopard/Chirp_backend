@@ -36,6 +36,8 @@ route.post('/add-relation', profileController.addRelationShip);
 
 route.post('/get-about-section', profileController.getAboutSection);
 
+route.post('/add-language', profileController.addLanguage);
+
 
 
 

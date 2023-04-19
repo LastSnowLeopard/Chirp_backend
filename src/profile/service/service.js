@@ -357,6 +357,14 @@ exports.addEventService = async function (data) {
     
     }
 
+exports.addLanguageService = async function (data) {
+    const { user_id, language, privacy } = data;
+    const query = `INSERT INTO languages ( user_id, language, proficiency, privacy) VALUES ( '${user_id}', '${language}', 'beginner', '${privacy}')`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    console.log(fields.insertId);
+    return fields.insertId;
+    };
 
 exports.getEducationService = async function (data) {
     const {user_id}=data;
@@ -388,8 +396,6 @@ exports.getPlaceLivedService = async function (data) {
     
     }
          
-    
-    
 exports.getRelationshipService = async function (data) {
     const {user_id}=data;
     const query = `select family.user_id,
@@ -401,7 +407,7 @@ exports.getRelationshipService = async function (data) {
     profiles.profile_image_url
     from family
     left join users on family.relation_person_id=users.user_id
-    left join profiles on family.relation_person_id=users.user_id
+    left join profiles on family.relation_person_id=profiles.user_id
     where family.user_id='${user_id}'`;
     console.log(query);
     const [fields] = await dbpool.query(query);
@@ -421,8 +427,28 @@ exports.getEventsService = async function (data) {
     return fields;
     
     }
-    
 
+exports.getLanguagesService = async function (data) {
+    const {user_id}=data;
+    const query = `select * from languages where user_id='${user_id}'`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    
+    return fields;
+    
+    }
+
+exports.getbasicInfoService = async function (data) {
+    const {user_id}=data;
+    const query = `select * from basic_bio where user_id='${user_id}'`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    
+    return fields;
+    
+    }
+    
+    
     
     
 

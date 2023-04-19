@@ -283,6 +283,11 @@ exports.getAboutSection = async (req, res) => {
         data.RelationShip=RelationShip;
         var EventService = await profileService.getEventsService({user_id});
         data.EventService=EventService;
+        var LanguagesService = await profileService.getLanguagesService({user_id});
+        data.Languages=LanguagesService;
+        var BasicInfoService = await profileService.getbasicInfoService({user_id});
+        data.BasicInfo=BasicInfoService;
+
 
 
     
@@ -293,3 +298,21 @@ exports.getAboutSection = async (req, res) => {
         res.status(200).send({message:"Error in Getting Data",status:0,data:{}});
     }  
 };
+
+exports.addLanguage = async (req, res) => {
+    // Read input values from req.body
+    const { user_id, language, privacy } = req.body;
+    try {
+      // Call the service function to insert the data
+      const response = await profileService.addLanguageService({  user_id, language, privacy });
+      // Return a response to the client based on the result
+      if (response >= 0) {
+        res.status(200).send({ message: "Language added successfully", status: 1, data: { response } });
+      } else {
+        res.status(200).send({ message: "Language not added successfully", status: 0, data: {} });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: error.message });
+    }
+  };
