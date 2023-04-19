@@ -28,5 +28,13 @@ route.post('/add-work', profileController.addWork);
 
 route.post('/add-education', profileController.addEducation);
 
+route.post('/place-lived', profileController.addPlacedLived);
+
+route.post('/add-relation', profileController.addRelationShip);
+
+route.post('/get-about-section', profileController.getAboutSection);
+
+
+
 
 module.exports = route

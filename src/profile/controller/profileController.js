@@ -221,3 +221,56 @@ exports.addEducation = async (req, res) => {
         res.status(500).send({ message: error.message });
     }  
 };
+
+
+exports.addPlacedLived = async (req, res) => {
+    const { user_id, city, latlng, date_moved, privacy } = req.body;
+    try {
+        var response = await profileService.addPlacedliveService({user_id, city, latlng, date_moved, privacy});
+        if(response>=0)
+            res.status(200).send({message:"placed Added added successfully",status:1,data:{response}});
+        else
+            res.status(200).send({message:"placed not added successfully",status:0,data:{}});
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+};
+
+
+exports.addRelationShip = async (req, res) => {
+    
+    const { user_id,relationship,relation_person_id,privacy } = req.body;
+    try {
+        var response = await profileService.addRelationshipService({user_id,relationship,relation_person_id,privacy});
+        if(response>=0)
+            res.status(200).send({message:"placed Added added successfully",status:1,data:{response}});
+        else
+            res.status(200).send({message:"placed not added successfully",status:0,data:{}});
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+};
+
+
+exports.getAboutSection = async (req, res) => {
+    const { user_id } = req.body;
+
+    let data={};
+    try {
+        var education = await profileService.getEducationService({user_id});
+        data.education=education;
+        var work = await profileService.getworkService({user_id});
+        data.work=work;
+        var placesLived = await profileService.getPlaceLivedService({user_id});
+        data.placesLived=placesLived;
+        var RelationShip = await profileService.getRelationshipService({user_id});
+        data.RelationShip=RelationShip;
+        res.status(200).send({message:"About Data data",status:1,data});
+       
+    } catch (error) {
+        console.log(error);
+        res.status(200).send({message:"Error in Getting Data",status:0,data:{}});
+    }  
+};

@@ -322,7 +322,75 @@ return fields.insertId;
 
 }
 
+exports.addRelationshipService = async function (data) {
+    const { user_id,relationship,relation_person_id,privacy}=data;
+    const query = `INSERT INTO family (user_id, relationship, relation_person_id, privacy) VALUES (${user_id}, '${relationship}', '${relation_person_id}', '${privacy}')`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    
+    console.log(fields.insertId);
+    return fields.insertId;
+    
+    }
+
+exports.addPlacedliveService = async function (data) {
+    const {user_id, city, latlng, date_moved, privacy}=data;
+    const query = `INSERT INTO places_lived (user_id, city, latlng, date_moved, privacy) VALUES (${user_id}, '${city}', '${latlng}', '${date_moved}', '${privacy}')`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    
+    console.log(fields.insertId);
+    return fields.insertId;
+    
+    }
+    
 
 
 
+exports.getEducationService = async function (data) {
+    const {user_id}=data;
+    const query = `select * from education where user_id='${user_id}'`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    
+    return fields;
+    
+    }
+
+exports.getworkService = async function (data) {
+        const {user_id}=data;
+        const query = `select * from work where user_id='${user_id}'`;
+        console.log(query);
+        const [fields] = await dbpool.query(query);
+        
+        return fields;
+        
+        }
+        
+exports.getPlaceLivedService = async function (data) {
+    const {user_id}=data;
+    const query = `select * from places_lived where user_id='${user_id}'`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    
+    return fields;
+    
+    }
+         
+    
+exports.getRelationshipService = async function (data) {
+    const {user_id}=data;
+    const query = `select * from family where user_id='${user_id}'
+                    inner join users on family.relation_person_id=users.user_id where user_id='${user_id}'`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    
+    return fields;
+    
+    }
+    
+
+    
+
+    
 
