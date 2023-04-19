@@ -343,7 +343,20 @@ exports.addPlacedliveService = async function (data) {
     return fields.insertId;
     
     }
+
+exports.addEventService = async function (data) {
+    const {user_id, content, location, location_lat_lng, post_type, life_event_id, event_date, privacy }=data;
+    const query = `INSERT INTO posts (user_id, content, location, location_lat_lng, post_type, life_event_id, event_date, privacy)
+     VALUES ('${user_id}', '${content}', '${location}', '${location_lat_lng}', '${post_type}', '${life_event_id}', '${event_date}', '${privacy}')`;
+
+    console.log(query);
+    const [fields] = await dbpool.query(query);
     
+    console.log(fields.insertId);
+    return fields.insertId;
+    
+    }
+
 
 exports.getEducationService = async function (data) {
     const {user_id}=data;
@@ -376,6 +389,7 @@ exports.getPlaceLivedService = async function (data) {
     }
          
     
+    
 exports.getRelationshipService = async function (data) {
     const {user_id}=data;
     const query = `select family.user_id,
@@ -397,7 +411,7 @@ exports.getRelationshipService = async function (data) {
     }
 exports.getEventsService = async function (data) {
     const {user_id}=data;
-    const query = `SELECT posts.post_id,posts.user_id,posts.life_event_id,posts.created_at,posts.updated_at,posts.post_type,
+    const query = `SELECT posts.post_id,posts.content,posts.user_id,posts.life_event_id,posts.created_at,posts.updated_at,posts.post_type,
     event_list.event_name,event_list.event_icon_url
     FROM posts 
     INNER JOIN event_list on posts.life_event_id=event_list.event_id

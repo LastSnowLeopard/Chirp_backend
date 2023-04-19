@@ -221,13 +221,13 @@ exports.addEducation = async (req, res) => {
 };
 
 exports.addEvent = async (req, res) => {
-    const { user_id, institute_name, from_date, to_date, is_graduated, degree, privacy } = req.body;
+    const { user_id, content, location, location_lat_lng, post_type, life_event_id, event_date, privacy } = req.body;
     try {
-        var response = await profileService.addEventService({user_id, institute_name, from_date, to_date, is_graduated, degree, privacy});
+        var response = await profileService.addEventService({user_id, content, location, location_lat_lng, post_type, life_event_id, event_date, privacy });
         if(response>=0)
-            res.status(200).send({message:"Education added successfully",status:1,data:{response}});
+            res.status(200).send({message:"Event added successfully",status:1,data:{response}});
         else
-            res.status(200).send({message:"Education not added successfully",status:0,data:{}});
+            res.status(200).send({message:"Event not added successfully",status:0,data:{}});
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error.message });
