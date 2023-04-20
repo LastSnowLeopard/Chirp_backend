@@ -12,9 +12,4 @@ router.post('/like-post',postController.likePost)
 router.post('/get-friends-by-userid',postController.getUsrFriendsByUserid);
 router.post('/create-comments',postController.createComments);
 router.post('/create-replies',postController.createReplies);
-
-
-
-
-
 module.exports = router;

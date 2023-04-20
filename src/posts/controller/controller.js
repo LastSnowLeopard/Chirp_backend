@@ -63,7 +63,7 @@ exports.getPostById = async (req, res) => {
         if(response.posts.length > 0){
             for (let i = 0; i < response.posts.length; i++) {
 
-                if(response.posts[i].tagged_user_ids.length > 0){
+                if(response.posts[i].tagged_user_ids!=null || response.posts[i].tagged_user_ids!=undefined || response.posts[i].tagged_user_ids!=""){
                        response.posts[i].tagged_user = await postService.getTaggedUsersDataService(response.posts[i].tagged_user_ids);
                 }
                 response.posts[i].media = await postService.getMediaPostService(response.posts[i].post_id);

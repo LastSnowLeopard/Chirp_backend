@@ -57,6 +57,7 @@ exports.getPostListService = async function (data) {
         posts.total_likes, 
         posts.user_id,
         users.full_name, 
+        profiles.profile_image_url, 
         posts.content, 
         posts.location, 
         posts.location_lat_lng, 
@@ -77,6 +78,7 @@ exports.getPostListService = async function (data) {
         END AS is_liked
       FROM posts
       LEFT JOIN users ON posts.user_id = users.user_id 
+      LEFT JOIN profiles ON posts.user_id = profiles.user_id
       LEFT JOIN likes ON posts.post_id = likes.post_id 
       LEFT JOIN feelings_list ON feelings_list.feelings_id = posts.feeling_id
       LEFT JOIN event_list ON event_list.event_id = posts.life_event_id  
