@@ -249,7 +249,10 @@ exports.getHobbyProfileService = async function (user_id) {
 
       
        
-        const [data] = await dbpool.query(`SELECT * FROM user_hobbies WHERE user_id = ${user_id}`)
+        const [data] = await dbpool.query(`SELECT user_hobbies.*,hobby_list.hobby_icon_url
+         FROM user_hobbies
+         left join hobby_list on user_hobbies.public_hobby_id=hobby_list.hobby_id
+         WHERE user_hobbies.user_id = ${user_id}`)
     
         if (data.length >= 0) {
             return {message:"hobbies list of user",data:{hobbies:data},status:1}
