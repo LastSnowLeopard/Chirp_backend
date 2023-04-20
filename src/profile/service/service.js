@@ -152,10 +152,12 @@ exports.readProfileDataByIdForEditProfileService = async function (userId) {
             const [education] = await dbpool.query(
                 'select education_id, user_id, college, `from`, `to`, graduated, concentration1, concentration2, concentration3, attended_for, degree, privacy, created_at, updated_at, education_level FROM education WHERE user_id= '+userId
             );
-
+            const [placesLived] = await dbpool.query(
+                'select * from places_lived WHERE user_id= '+userId
+            );
 
             
-            return { message: "Profile Found", data: {"profile_data":rows[0],"user_hobbies":rows1,"user_education":education,"user_jobs":jobs }, status: 1 };
+            return { message: "Profile Found", data: {"profile_data":rows[0],"user_hobbies":rows1,"user_education":education,"user_jobs":jobs,"places_lived":placesLived }, status: 1 };
 
         } else {
             return { message: "Profile data not Found", data: "", status: 0 };

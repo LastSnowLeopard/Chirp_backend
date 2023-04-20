@@ -90,7 +90,6 @@ exports.readProfileDataById = async (req, res) => {
 
 exports.readProfileDataByIdForEditProfile = async (req, res) => {
     let userId = req.body.userId;
-    
     try {
         const response = await profileService.readProfileDataByIdForEditProfileService(userId);
         res.status(200).send(response);
