@@ -116,7 +116,7 @@ exports.getTaggedUsersDataService = async function (tagged_user_id_array) {
         var sql =  `SELECT u.user_id, u.full_name, p.profile_image_url
         FROM users u
         LEFT JOIN profiles p ON u.user_id = p.user_id        
-         WHERE u.user_id IN (${tagged_user_id_array})`;
+         WHERE u.user_id IN ('${tagged_user_id_array}')`;
 
         const [fields] = await dbpool.query(sql)
 
