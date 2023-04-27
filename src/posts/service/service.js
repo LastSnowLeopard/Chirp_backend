@@ -121,8 +121,6 @@ exports.getTaggedUsersDataService = async function (tagged_user_id_array) {
         const [fields] = await dbpool.query(sql)
 
         if (fields.length >= 0) {
-
-
             return fields;
                 }
             else

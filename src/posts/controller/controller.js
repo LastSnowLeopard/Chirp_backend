@@ -148,7 +148,7 @@ try {
     const respond = await postService.createCommentService(comment);
     if(respond>"1"){
 
-        res.status(200).send({message:"Comment Created Successfully",data:{},status: 1})
+        res.status(200).send({message:"Comment Created Successfully",data:{comment_id:respond},status: 1})
     }else{
         res.status(200).send({message:"Comment not Created Successfully",data:{},status: 0})
     }
@@ -175,7 +175,7 @@ exports.createReplies = async (req, res) => {
         const respond = await postService.createRepliesService(reply);
         if(respond>"0"){
     
-            res.status(200).send({message:"Reply Created Successfully",data:{},status: 1})
+            res.status(200).send({message:"Reply Created Successfully",data:{repley_id:respond},status: 1})
 
         }else{
             res.status(200).send({message:"Reply not Created Successfully",data:{},status: 0})
