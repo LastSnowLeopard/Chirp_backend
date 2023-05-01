@@ -6,6 +6,7 @@ exports.createPost = async (req, res) => {
 
   let post_type = req.body.post_type || ""; // life event // normal post //live video // clip
   let user_id = req.body.userid;
+  let gif_image_url = req.body.gif_image_url || "";
   let tagged_user=req.body.tagged_user;
   let media=[];
   let content=req.body.content || "";
@@ -27,7 +28,7 @@ exports.createPost = async (req, res) => {
 // create Post
    
     try {
-        var create_post_id = await postService.createPost({user_id,tagged_user,content,feeling,privacy,location,location_lat_lng,life_event_title,post_type,feeling_id,feeling_name,life_event_id,event_date});
+        var create_post_id = await postService.createPost({user_id,tagged_user,content,feeling,privacy,location,location_lat_lng,life_event_title,post_type,feeling_id,feeling_name,life_event_id,event_date,gif_image_url});
 
         if ((create_post_id != null || create_post_id != undefined || create_post_id != "" || create_post_id != 0) && (media.length > 0)) {
           let media_query = `INSERT INTO post_media(post_id, media_url, media_type) VALUES ${media.map((m, index) => `( '${create_post_id}', '${m.media_name}', '${m.media_type}')`).join(',')};`;
@@ -69,24 +70,42 @@ exports.getPostById = async (req, res) => {
                 response.posts[i].media = await postService.getMediaPostService(response.posts[i].post_id);
 
                 response.posts[i].commets = await postService.getMediaPostCommentsandRepliesService(response.posts[i].post_id);
-
-
-
-
-
             }
-
         }
         res.status(200).send(response);
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error.message });
     }  
-
-
 }
 
+exports.getPostbyShareableLink = async (req, res) => {
+    let data={
+        linkid : req.body.linkid,
+        requesterId : req.body.requesterId,
+    };
 
+    try {
+        const response = await postService.getPostListServiceForShareableLink(data);
+        response.tagged_user=[];
+
+        if(response.posts.length > 0){
+            for (let i = 0; i < response.posts.length; i++) {
+
+                if(response.posts[i].tagged_user_ids!=null || response.posts[i].tagged_user_ids!=undefined || response.posts[i].tagged_user_ids!=""){
+                       response.posts[i].tagged_user = await postService.getTaggedUsersDataService(response.posts[i].tagged_user_ids);
+                }
+                response.posts[i].media = await postService.getMediaPostService(response.posts[i].post_id);
+
+                response.posts[i].commets = await postService.getMediaPostCommentsandRepliesService(response.posts[i].post_id);
+            }
+        }
+        res.status(200).send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+}
 
 
 
@@ -110,6 +129,52 @@ try {
 
 }
 
+
+exports.SharePost = async (req, res) => {
+    let postid=req.body.post_id;
+    var hash = Math.floor(1000 + Math.random() * 9000);
+        hash=hash+"sl"+postid+"sl"+hash;
+try {
+    var respond = await postService.saveshareablelink({postid,hash});
+    if(respond>="1"){
+        
+        let Link=`http://chirp.one/view/${hash}`;
+            res.status(200).send({message:"shareable link generated",data:{link:Link},status:1})
+    }else{
+        res.status(200).send({message:"shareable link not generated",data:{},status:0})
+    }
+
+}catch(e){
+
+    console.log(e);
+}
+
+}
+
+
+
+
+
+
+
+exports.deletePost = async (req, res) => {
+    let post_id=req.body.post_id;
+    let user_id=req.body.user_id;
+    
+
+try {
+    const respond = await postService.deletepost_service(post_id,user_id);
+    if(respond.status=="1"){
+            res.status(200).send({message:"deleted Successfully",data:{},status:1})
+    }else{
+            res.status(200).send(respond)
+    }
+
+}catch(e){
+    console.log(e);
+}
+
+}
 
 
 exports.getUsrFriendsByUserid = async (req, res) => {

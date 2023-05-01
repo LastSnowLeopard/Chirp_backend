@@ -73,9 +73,10 @@ exports.deleteCoverImage = async (req, res) => {
 
 exports.readProfileDataById = async (req, res) => {
     let userId = req.body.userId;
-    
     try {
         const response = await profileService.readProfiledatabyIdService(userId);
+        const recent_friends = await profileService.getRecentFriendsbyIdService(userId);
+        response.data.recent_friends=recent_friends;
         res.status(200).send(response);
     } catch (error) {
         console.log(error);

@@ -23,6 +23,22 @@ exports.addHobbyInListService= async ( hobby,hobby_icon_url) => {
 
 
 
+exports.creatbackgroundMedia= async ( query) => {
+  try {
+    const [data] = await dbpool.query(query);  
+    if(data.affectedRows>0){
+      return {message:"Background inserted",data:{user_id:""},status:1}
+    }else{
+      return {message:"",data:{user_id:""},status:0}
+    }
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
 exports.getHobbyListService = async () => {
   try {
     var sql1 = `select * from hobby_list`;
@@ -54,9 +70,22 @@ exports.getEventListService = async () => {
 } catch (error) {
   throw error;
 }
-
 }
 
+exports.getPOstBackgroundListService = async () => {
+  try {
+    var sql1 = `select * from post_backgrounds `;
+    const [data] = await dbpool.query(sql1);  
+    if(data.length>0){
+      return {message:"Data List Found",data:data,status:1}
+    }else{
+      return {message:"no data found",data:{},status:0}
+    }
+
+} catch (error) {
+  throw error;
+}
+}
 
 exports.getFeelingListService = async () => {
   try {

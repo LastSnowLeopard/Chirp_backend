@@ -9,8 +9,8 @@ const dbpool=pool.promise();
 exports.createPost = async function (data) {
     const { user_id,tagged_user,content,feeling_id,feeling_name,privacy,location,location_lat_lng,life_event_title,post_type,life_event_id,event_date } = data;
 
-    let post_query=`INSERT INTO posts (user_id, content, post_type, tagged_user_ids, privacy, location,feeling_id,feeling_name, location_lat_lng, life_event_id,event_name,event_date) 
-    VALUES (${user_id}, '${content}', '${post_type}', '${tagged_user}', '${privacy}', '${location}', '${feeling_id}','${feeling_name}','${location_lat_lng}','${life_event_id}', '${life_event_title}','${event_date}')`;
+    let post_query=`INSERT INTO posts (user_id, content, post_type, tagged_user_ids, privacy, location,feeling_id,feeling_name, location_lat_lng, life_event_id,event_name,event_date,gif_image_url) 
+    VALUES (${user_id}, '${content}', '${post_type}', '${tagged_user}', '${privacy}', '${location}', '${feeling_id}','${feeling_name}','${location_lat_lng}','${life_event_id}', '${life_event_title}','${event_date}','${gif_image_url}')`;
     try {
         console.log(post_query);
         const [fields] = await dbpool.query(post_query);
@@ -60,6 +60,7 @@ exports.getPostListService = async function (data) {
         profiles.profile_image_url, 
         posts.content, 
         posts.location, 
+        posts.gif_image_url, 
         posts.location_lat_lng, 
         posts.post_type, 
         posts.tagged_user_ids, 
@@ -83,6 +84,7 @@ exports.getPostListService = async function (data) {
       LEFT JOIN feelings_list ON feelings_list.feelings_id = posts.feeling_id
       LEFT JOIN event_list ON event_list.event_id = posts.life_event_id  
       WHERE (posts.user_id = '${data.userId}' OR posts.tagged_user_ids like '%${data.userId}%' ) AND deleted = '0' 
+      order by  posts.post_id desc
       LIMIT ${data.pageSize} OFFSET ${(data.page - 1) * data.pageSize}
       `;
 
@@ -93,9 +95,71 @@ exports.getPostListService = async function (data) {
 
          var sql1 = `SELECT  count(*) FROM posts
          left join feelings_list on feelings_list.feelings_id=posts.feeling_id
-         left join event_list on event_list.event_id=posts.life_event_id     WHERE posts.user_id='${data.userId}' AND deleted='0'`;
+         left join event_list on event_list.event_id=posts.life_event_id     WHERE posts.user_id='${data.userId}' AND deleted='0'
+         order by  posts.post_id desc`;
         const [field] = await dbpool.query(sql1);
             return {message:"data fetched",posts:fields,total_page:Math.ceil(field[0]['count(*)']/data.pageSize),pageno:data.page,status:1}
+                }
+            else
+        {
+            return  {message:"not data fected",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+exports.getPostListServiceForShareableLink = async function (data) {
+
+    let query=``;
+    if(data.filter == "all"){
+        query=``;
+    }
+
+    try {
+        var sql =  `SELECT 
+        posts.post_id, 
+        posts.total_likes, 
+        posts.user_id,
+        users.full_name, 
+        profiles.profile_image_url, 
+        posts.content, 
+        posts.location, 
+        posts.gif_image_url, 
+        posts.location_lat_lng, 
+        posts.post_type, 
+        posts.tagged_user_ids, 
+        posts.life_event_id, 
+        posts.feeling_id, 
+        posts.event_date, 
+        posts.privacy, 
+        posts.created_at,
+        feelings_list.feelings_name,
+        feelings_list.feelings_icon_url,
+        event_list.event_name,
+        event_list.event_icon_url,
+        CASE 
+          WHEN likes.user_id = ${data.requesterId} THEN 1 
+          ELSE 0 
+        END AS is_liked
+      FROM posts
+      LEFT JOIN users ON posts.user_id = users.user_id 
+      LEFT JOIN profiles ON posts.user_id = profiles.user_id
+      LEFT JOIN likes ON posts.post_id = likes.post_id 
+      LEFT JOIN feelings_list ON feelings_list.feelings_id = posts.feeling_id
+      LEFT JOIN event_list ON event_list.event_id = posts.life_event_id  
+      WHERE posts.shareable_id='${data.linkid}' AND  deleted = '0' 
+      `;
+
+        const [fields] = await dbpool.query(sql)
+        console.log(fields);
+
+        if (fields.length >= 0) {
+
+            return {message:"data fetched",posts:fields,status:1}
                 }
             else
         {
@@ -357,9 +421,25 @@ exports.createCommentService = async function (comment ) {
         return err+"System Error";
     }
     
-    
-    
     }
+    exports.saveshareablelink = async function (data ) {
+
+        const query = `update posts set shareable_id='${data.hash}' where post_id='${data.postid}'`;
+        try {
+            console.log(query);
+            const [fields] = await dbpool.query(query);
+            
+            console.log(fields.affectedRows);
+            return fields.affectedRows;
+        }catch (err) {
+            console.error(err)
+            return err+"System Error";
+        }
+        
+        }
+
+
+    
 
 
     exports.createRepliesService = async function (reply ) {
@@ -376,6 +456,24 @@ exports.createCommentService = async function (comment ) {
             console.error(err)
             return err+"System Error";
         }
+
+
+
+}
+
+
+exports.deletepost_service = async function (post_id, user_id ) {
+    const deletepost = `delete from posts where post_id='${post_id}' AND user_id='${user_id}'`;
+    const deletelikes =`delete FROM likes WHERE post_id='${post_id}'`
+    try {
+        const [fields] = await dbpool.query(deletepost);
+        const [field] = await dbpool.query(deletelikes);
+        console.log("okokopkoko",deletepost,deletelikes)
+
+        return {message:"deleted Successfully",data:{},status:1}
+    }catch (err) {
+        return {message:"Not deleted Successfully",data:{},status:0}
+    }
 
 
 

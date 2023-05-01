@@ -126,6 +126,31 @@ exports.readProfiledatabyIdService = async function (userId) {
 };
 
 
+exports.getRecentFriendsbyIdService = async function (userId) {
+    try {
+        const [rows] = await dbpool.query(
+            `SELECT friends.friend_id as id,users.full_name,profiles.profile_image_url,profiles.cover_photo_url FROM friends 
+            LEFT JOIN users ON users.user_id=friends.friend_user_id
+            LEFT JOIN profiles ON profiles.user_id=friends.friend_user_id
+            WHERE friends.user_id='${userId}'
+            ORDER by friends.friend_id DESC LIMIT 10;`
+        );
+        
+        if (rows.length > 0) {
+
+            return rows;
+
+        } else {
+            return rows;
+
+        }
+    } catch (error) {
+        console.error(error);
+        throw new Error("System error");
+    }
+};
+
+
 
 
 exports.readProfileDataByIdForEditProfileService = async function (userId) {
