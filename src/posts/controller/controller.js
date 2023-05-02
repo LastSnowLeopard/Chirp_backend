@@ -7,6 +7,7 @@ exports.createPost = async (req, res) => {
   let post_type = req.body.post_type || ""; // life event // normal post //live video // clip
   let user_id = req.body.userid;
   let gif_image_url = req.body.gif_image_url || "";
+  let background_id = req.body.background_id || "";
   let tagged_user=req.body.tagged_user;
   let media=[];
   let content=req.body.content || "";
@@ -28,7 +29,7 @@ exports.createPost = async (req, res) => {
 // create Post
    
     try {
-        var create_post_id = await postService.createPost({user_id,tagged_user,content,feeling,privacy,location,location_lat_lng,life_event_title,post_type,feeling_id,feeling_name,life_event_id,event_date,gif_image_url});
+        var create_post_id = await postService.createPost({user_id,tagged_user,content,feeling,privacy,location,location_lat_lng,life_event_title,post_type,feeling_id,feeling_name,life_event_id,event_date,gif_image_url,background_id});
 
         if ((create_post_id != null || create_post_id != undefined || create_post_id != "" || create_post_id != 0) && (media.length > 0)) {
           let media_query = `INSERT INTO post_media(post_id, media_url, media_type) VALUES ${media.map((m, index) => `( '${create_post_id}', '${m.media_name}', '${m.media_type}')`).join(',')};`;

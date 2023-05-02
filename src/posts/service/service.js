@@ -7,10 +7,10 @@ const dbpool=pool.promise();
 
 
 exports.createPost = async function (data) {
-    const { user_id,tagged_user,content,feeling_id,feeling_name,privacy,location,location_lat_lng,life_event_title,post_type,life_event_id,event_date,gif_image_url } = data;
+    const { user_id,tagged_user,content,feeling_id,feeling_name,privacy,location,location_lat_lng,life_event_title,post_type,life_event_id,event_date,gif_image_url,background_id } = data;
 
-    let post_query=`INSERT INTO posts (user_id, content, post_type, tagged_user_ids, privacy, location,feeling_id,feeling_name, location_lat_lng, life_event_id,event_name,event_date,gif_image_url) 
-    VALUES (${user_id}, '${content}', '${post_type}', '${tagged_user}', '${privacy}', '${location}', '${feeling_id}','${feeling_name}','${location_lat_lng}','${life_event_id}', '${life_event_title}','${event_date}','${gif_image_url}')`;
+    let post_query=`INSERT INTO posts (user_id, content, post_type, tagged_user_ids, privacy, location,feeling_id,feeling_name, location_lat_lng, life_event_id,event_name,event_date,gif_image_url,background_id) 
+    VALUES (${user_id}, '${content}', '${post_type}', '${tagged_user}', '${privacy}', '${location}', '${feeling_id}','${feeling_name}','${location_lat_lng}','${life_event_id}', '${life_event_title}','${event_date}','${gif_image_url}','${background_id}')`;
     try {
         console.log(post_query);
         const [fields] = await dbpool.query(post_query);
@@ -61,6 +61,10 @@ exports.getPostListService = async function (data) {
         posts.content, 
         posts.location, 
         posts.gif_image_url, 
+        post_backgrounds.id as post_backgroundid,
+        post_backgrounds.background_type,
+        post_backgrounds.color_code,
+        post_backgrounds.image_url as background_image_url,
         posts.location_lat_lng, 
         posts.post_type, 
         posts.tagged_user_ids, 
@@ -81,6 +85,7 @@ exports.getPostListService = async function (data) {
       LEFT JOIN users ON posts.user_id = users.user_id 
       LEFT JOIN profiles ON posts.user_id = profiles.user_id
       LEFT JOIN likes ON posts.post_id = likes.post_id 
+      LEFT JOIN likes ON posts.background_id = post_backgrounds.id 
       LEFT JOIN feelings_list ON feelings_list.feelings_id = posts.feeling_id
       LEFT JOIN event_list ON event_list.event_id = posts.life_event_id  
       WHERE (posts.user_id = '${data.userId}' OR posts.tagged_user_ids like '%${data.userId}%' ) AND deleted = '0' 
