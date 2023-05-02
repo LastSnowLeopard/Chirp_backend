@@ -85,7 +85,7 @@ exports.getPostListService = async function (data) {
       LEFT JOIN users ON posts.user_id = users.user_id 
       LEFT JOIN profiles ON posts.user_id = profiles.user_id
       LEFT JOIN likes ON posts.post_id = likes.post_id 
-      LEFT JOIN likes ON posts.background_id = post_backgrounds.id 
+      LEFT JOIN post_backgrounds ON posts.background_id = post_backgrounds.id 
       LEFT JOIN feelings_list ON feelings_list.feelings_id = posts.feeling_id
       LEFT JOIN event_list ON event_list.event_id = posts.life_event_id  
       WHERE (posts.user_id = '${data.userId}' OR posts.tagged_user_ids like '%${data.userId}%' ) AND deleted = '0' 
