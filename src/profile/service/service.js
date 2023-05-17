@@ -293,7 +293,6 @@ exports.getHobbyProfileService = async function (user_id) {
     }
 };
 
-
 exports.getFriendsListService = async function (data) {
 
     let query=``;
@@ -327,8 +326,6 @@ exports.getFriendsListService = async function (data) {
     }
 };
 
-
-
 exports.addWorkService = async function (data) {
     var { user_id, company, position, city_town, description, currently_working_here, privacy, from_date,to_date } = data;
     const query = `INSERT INTO work (user_id, company, position, city_town, description, currently_working_here, privacy, \`from\`, \`to\`) VALUES (${user_id}, '${company}', '${position}', '${city_town}', '${description}', ${currently_working_here}, '${privacy}', '${from_date}', '${to_date}')`;
@@ -340,6 +337,61 @@ exports.addWorkService = async function (data) {
 
 
 }
+
+exports.updateWorkService = async function (data) {
+    var { work_id,user_id, company, position, city_town, description, currently_working_here, privacy, from_date, to_date } = data;
+    const query = `UPDATE work SET company='${company}', position='${position}', city_town='${city_town}', description='${description}', currently_working_here=${currently_working_here}, privacy='${privacy}', \`from\`='${from_date}', \`to\`='${to_date}'
+     WHERE user_id=${user_id} and work_id='${work_id}'`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+
+    return fields.affectedRows > 0;
+}
+
+exports.updateEducationService = async function (data) {
+    const { education_id,user_id, institute_name, from_date, to_date, is_graduated, degree, privacy } = data;
+    const query = `UPDATE education SET college='${institute_name}', \`from\`='${from_date}', \`to\`='${to_date}', graduated=${is_graduated}, degree='${degree}', privacy='${privacy}' WHERE user_id=${user_id} AND education_id='${education_id}'` ;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+
+    return fields.affectedRows > 0;
+}
+
+exports.updatePlaceLivedService = async function (data) {
+    const { place_id, user_id, city, latlng, date_moved, privacy } = data;
+    const query = `UPDATE places_lived SET user_id = ${user_id}, city = '${city}', latlng = '${latlng}', date_moved = '${date_moved}', privacy = '${privacy}' WHERE place_id = ${place_id}`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    console.log(fields.affectedRows);
+    return fields.affectedRows > 0;
+};
+
+exports.updateLanguageService = async function (data) {
+    const { language_id, user_id, language, privacy } = data;
+    const query = `UPDATE languages SET user_id = '${user_id}', language = '${language}', privacy = '${privacy}' WHERE language_id = ${language_id}`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    console.log(fields.affectedRows);
+    return fields.affectedRows > 0;
+};
+
+exports.updateEventService = async function (data) {
+    const { event_id, user_id, content, location, location_lat_lng, post_type, life_event_id, event_date, privacy } = data;
+    const query = `UPDATE posts SET user_id = '${user_id}', content = '${content}', location = '${location}', location_lat_lng = '${location_lat_lng}', post_type = '${post_type}', life_event_id = '${life_event_id}', event_date = '${event_date}', privacy = '${privacy}' WHERE event_id = ${event_id}`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    console.log(fields.affectedRows);
+    return fields.affectedRows > 0;
+};
+
+exports.updateRelationshipService = async function (data) {
+    const { family_id, user_id, relationship, relation_person_id, privacy } = data;
+    const query = `UPDATE family SET user_id = ${user_id}, relationship = '${relationship}', relation_person_id = '${relation_person_id}', privacy = '${privacy}' WHERE family_id = ${family_id}`;
+    console.log(query);
+    const [fields] = await dbpool.query(query);
+    console.log(fields.affectedRows);
+    return fields.affectedRows > 0;
+};
 
 exports.addEducationService = async function (data) {
 const {user_id, institute_name, from_date, to_date, is_graduated, degree, privacy}=data;
@@ -414,7 +466,7 @@ exports.getworkService = async function (data) {
         
         return fields;
         
-        }
+   }
         
 exports.getPlaceLivedService = async function (data) {
     const {user_id}=data;

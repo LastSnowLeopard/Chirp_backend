@@ -130,6 +130,9 @@ exports.addBioInProfile = async (req, res) => {
 };
 
 
+
+
+
 exports.addHobbies = async (req, res) => {
     
     let hobbiesData=req.body.hobbiesData;
@@ -220,6 +223,42 @@ exports.addEducation = async (req, res) => {
     }  
 };
 
+
+exports.updateWork = async (req, res) => {
+    var { user_id, company, position, city_town, description, currently_working_here, privacy, from_date, to_date,work_id } = req.body;
+    if (currently_working_here == 1) {
+        to = "Present";
+    }
+
+    try {
+        const response = await profileService.updateWorkService({ work_id,user_id, company, position, city_town, description, currently_working_here, privacy, from_date, to_date });
+        if (response) {
+            res.status(200).send({ message: "Work updated successfully", status: 1, data: response });
+        } else {
+            res.status(200).send({ message: "Work not updated successfully", status: 0, data: {} });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message, status: 0 });
+    }
+};
+
+exports.updateEducation = async (req, res) => {
+    const { education_id,user_id, institute_name, from_date, to_date, is_graduated, degree, privacy } = req.body;
+    try {
+        const response = await profileService.updateEducationService({ education_id,user_id, institute_name, from_date, to_date, is_graduated, degree, privacy });
+        if (response) {
+            res.status(200).send({ message: "Education updated successfully", status: 1, data: response });
+        } else {
+            res.status(200).send({ message: "Education not updated successfully", status: 0, data: {} });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message, status: 0 });
+    }
+};
+
+
 exports.addEvent = async (req, res) => {
     const { user_id, content, location, location_lat_lng, post_type, life_event_id, event_date, privacy } = req.body;
     try {
@@ -232,6 +271,70 @@ exports.addEvent = async (req, res) => {
         console.log(error);
         res.status(500).send({ message: error.message });
     }  
+};
+
+
+
+
+
+exports.updatePlaceLived = async (req, res) => {
+    const { place_id, user_id, city, latlng, date_moved, privacy } = req.body;
+    try {
+        const response = await profileService.updatePlaceLivedService({ place_id, user_id, city, latlng, date_moved, privacy });
+        if (response) {
+            res.status(200).send({ message: "Place lived updated successfully", status: 1, data: response });
+        } else {
+            res.status(200).send({ message: "Place lived not updated successfully", status: 0, data: {} });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message, status: 0 });
+    }
+};
+
+exports.updateLanguage = async (req, res) => {
+    const { language_id, user_id, language, privacy } = req.body;
+    try {
+        const response = await profileService.updateLanguageService({ language_id, user_id, language, privacy });
+        if (response) {
+            res.status(200).send({ message: "Language updated successfully", status: 1, data: response });
+        } else {
+            res.status(200).send({ message: "Language not updated successfully", status: 0, data: {} });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message, status: 0 });
+    }
+};
+
+exports.updateEvent = async (req, res) => {
+    const { event_id, user_id, content, location, location_lat_lng, post_type, life_event_id, event_date, privacy } = req.body;
+    try {
+        const response = await profileService.updateEventService({ event_id, user_id, content, location, location_lat_lng, post_type, life_event_id, event_date, privacy });
+        if (response) {
+            res.status(200).send({ message: "Event updated successfully", status: 1, data: response });
+        } else {
+            res.status(200).send({ message: "Event not updated successfully", status: 0, data: {} });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message, status: 0 });
+    }
+};
+
+exports.updateRelationship = async (req, res) => {
+    const { family_id, user_id, relationship, relation_person_id, privacy } = req.body;
+    try {
+        const response = await profileService.updateRelationshipService({ family_id, user_id, relationship, relation_person_id, privacy });
+        if (response) {
+            res.status(200).send({ message: "Relationship updated successfully", status: 1, data: response });
+        } else {
+            res.status(200).send({ message: "Relationship not updated successfully", status: 0, data: {} });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message, status: 0 });
+    }
 };
 
 
@@ -318,11 +421,6 @@ exports.addLanguage = async (req, res) => {
       res.status(500).send({ message: error.message });
     }
   };
-
-
-
-  
-
 
 exports.getPhotos = async (req, res) => {
     // Read input values from req.body

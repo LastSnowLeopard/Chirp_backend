@@ -26,6 +26,40 @@ exports.createPost = async function (data) {
     }
 };
 
+exports.updatePost = async function (data) {
+    const { post_id,user_id,tagged_user,content,feeling_id,feeling_name,privacy,location,location_lat_lng,life_event_title,post_type,life_event_id,event_date,gif_image_url,background_id } = data;
+
+    const post_query = `UPDATE posts SET 
+    user_id = ${user_id},
+    content = '${content}',
+    post_type = '${post_type}',
+    tagged_user_ids = '${tagged_user}',
+    privacy = '${privacy}',
+    location = '${location}',
+    feeling_id = '${feeling_id}',
+    feeling_name = '${feeling_name}',
+    location_lat_lng = '${location_lat_lng}',
+    life_event_id = '${life_event_id}',
+    event_name = '${life_event_title}',
+    event_date = '${event_date}',
+    gif_image_url = '${gif_image_url}',
+    background_id = '${background_id}'
+    WHERE post_id = ${post_id}`;
+
+  try {
+    let [fields]=await dbpool.query(post_query);
+    if(fields.affectedRows>0){
+        return post_id;
+    }else{
+        return 0;
+    }
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+
 exports.createPostMedia = async function (query) {
 
     try {
@@ -42,6 +76,19 @@ exports.createPostMedia = async function (query) {
     }
 };
 
+
+
+exports.deletePostMedia = async function (mediaIds) {
+    const deleteQuery = `DELETE FROM post_media WHERE media_id IN (${mediaIds})`;
+    try {
+      await dbpool.query(deleteQuery);
+      
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+  
 
 
 exports.getPostListService = async function (data) {
@@ -427,6 +474,73 @@ exports.createCommentService = async function (comment ) {
     }
     
     }
+
+    exports.upadteCommentService = async function (comment ) {
+        const query = `update comments set content='${comment.content}' where comment_id='${comment.comment_id}'`;       
+        try {
+            console.log(query);
+            const [fields] = await dbpool.query(query);
+            
+            if(fields.affectedRows>0)
+            return 1;
+            else
+            return 0;
+        }catch (err) {
+            console.error(err)
+            return err+"System Error";
+        }
+        
+        }
+  
+    exports.updateRepliesService = async function (comment ) {
+        const query = `update comment_replies set content='${comment.content}' repley_id='${comment.repley_id}'`;
+        try {
+            console.log(query);
+            const [fields] = await dbpool.query(query);
+            if(fields.affectedRows>0)
+            return 1;
+            else
+            return 0;
+        }catch (err) {
+            console.error(err)
+            return err+"System Error";
+        }
+        
+        }
+
+    exports.deleteCommentsService = async function (comment ) {
+
+        const query = `delete from  comments where  comment_id='${comment.repley_id}'`;
+        try {
+            console.log(query);
+            const [fields] = await dbpool.query(query);
+            if(fields.affectedRows>0)
+            return 1;
+            else
+            return 0;
+        }catch (err) {
+            console.error(err)
+            return err+"System Error";
+        }
+        
+        }
+    exports.deleteRepliesService = async function (comment ) {
+
+        const query = `delete from comment_replies where repley_id='${comment.repley_id}'`;
+        try {
+            console.log(query);
+            const [fields] = await dbpool.query(query);
+            if(fields.affectedRows>0)
+            return 1;
+            else
+            return 0;
+        }catch (err) {
+            console.error(err)
+            return err+"System Error";
+        }
+        
+        }
+
     exports.saveshareablelink = async function (data ) {
 
         const query = `update posts set shareable_id='${data.hash}' where post_id='${data.postid}'`;

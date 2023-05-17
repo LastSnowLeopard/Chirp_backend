@@ -49,6 +49,56 @@ exports.createPost = async (req, res) => {
 
 
 
+exports.UpdatePost = async (req, res) => {
+
+    let post_type = req.body.post_type || ""; // life event // normal post //live video // clip
+    let post_id = req.body.post_id;
+    let user_id = req.body.userid;
+    let gif_image_url = req.body.gif_image_url || "";
+    let background_id = req.body.background_id || "";
+    let tagged_user=req.body.tagged_user;
+    let media=[];
+    let content=req.body.content || "";
+    let feeling=req.body.feeling || "";
+    let privacy=req.body.privacy || "public";
+    let location=req.body.location || "";
+    let life_event_title=req.body.life_event_title || "";
+    let location_lat_lng=req.body.location_lat_lng || "";
+    let feeling_id=req.body.feeling_id || "";
+    let feeling_name=req.body.feeling_name || "";
+    let life_event_id=req.body.life_event_id || "";   
+    let event_date=req.body.event_date || "";
+    let deleted_media_ids=req.body.deleted_media_ids || "";
+  
+    const filenames = req.files.map(file => {    
+      media.push({"media_name":file.originalname,"media_type":file.mimetype.split('/')[0]}) ;
+    }    
+  );
+  
+  // create Post
+      try {
+          var create_post_id = await postService.updatePost({post_id,user_id,tagged_user,content,feeling,privacy,location,location_lat_lng,life_event_title,post_type,feeling_id,feeling_name,life_event_id,event_date,gif_image_url,background_id});
+
+          if ((create_post_id != null || create_post_id != undefined || create_post_id != "" || create_post_id != 0) && (media.length > 0)) {
+            let media_query = `INSERT INTO post_media(post_id, media_url, media_type) VALUES ${media.map((m, index) => `( '${create_post_id}', '${m.media_name}', '${m.media_type}')`).join(',')};`;
+            create_media_id = await postService.createPostMedia(media_query);
+            if(deleted_media_ids.length>0)
+            create_media_id = await postService.deletePostMedia(deleted_media_ids);
+
+            res.status(200).send({message:"Post Created Successfully",post_id:create_post_id,status: 1});
+          } else {
+            res.status(200).send({message:"Post Created Successfully",post_id:create_post_id,status: 1});
+          }
+          
+              
+      } catch (error) {
+          console.log(error)
+          res.status(500).send({message:error,status:0});
+      }  
+  }
+  
+
+
 
 exports.getPostById = async (req, res) => {
     let data={
@@ -252,3 +302,98 @@ exports.createReplies = async (req, res) => {
     }
 
 }
+
+
+
+
+exports.updateComments = async (req, res) => {
+    
+    let comment = {
+        comment_id: req.body.comment_id,
+        content:req.body.content
+      };
+
+try {
+    const respond = await postService.upadteCommentService(comment);   
+    if(respond>0){
+
+        res.status(200).send({message:"Comment updated Successfully",data:{},status: 1})
+    }else{
+        res.status(200).send({message:"Comment didnot updated Successfully",data:{},status: 0})
+    }
+
+}catch(e){
+    res.status(500).send({message:"Server Error",data:{},status: 0})
+}
+}
+
+
+exports.updateReplies = async (req, res) => {
+    let reply = {
+        repley_id: req.body.repley_id,
+        content: req.body.content
+      };
+    
+      try {
+        const respond = await postService.updateRepliesService(reply);
+        if(respond>"0"){
+    
+            res.status(200).send({message:"Reply updated Successfully",data:{repley_id:respond},status: 1})
+
+        }else{
+            res.status(200).send({message:"Reply not updated Successfully",data:{},status: 0})
+        }
+    
+    }catch(e){
+        res.status(500).send({message:"Reply Created Successfully",data:{},status: 1})
+    }
+
+}
+
+
+exports.deleteComments = async (req, res) => {
+    let reply = {
+        comment_id: req.body.comment_id
+      };
+    
+      try {
+        const respond = await postService.deleteCommentsService(reply);
+        if(respond>"0"){
+    
+            res.status(200).send({message:"Reply deleted Successfully",data:{repley_id:respond},status: 1})
+
+        }else{
+            res.status(200).send({message:"Reply not deleted Successfully",data:{},status: 0})
+        }
+    
+    }catch(e){
+        res.status(500).send({message:"Reply not deleted Successfully",data:{},status: 0})
+    }
+}
+exports.deleteReplies = async (req, res) => {
+    let reply = {
+        repley_id: req.body.repley_id,
+      };
+    
+      try {
+        const respond = await postService.deleteRepliesService(reply);
+        if(respond>"0"){
+    
+            res.status(200).send({message:"Reply deleted Successfully",data:{repley_id:respond},status: 1})
+
+        }else{
+            res.status(200).send({message:"Reply not deleted Successfully",data:{},status: 0})
+        }
+    
+    }catch(e){
+        res.status(500).send({message:"Reply not deleted Successfully",data:{},status: 1})
+    }
+
+}
+
+
+
+
+
+
+
