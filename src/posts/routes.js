@@ -21,6 +21,17 @@ router.post('/update-replies',postController.updateReplies);
 router.post('/delete-comments',postController.deleteComments);
 router.post('/delete-replies',postController.deleteReplies);
 
+
+router.post('/get-newsfeeds',postController.searchNewsFeed);
+
+router.post('/send-friend-request',postController.SendFriendRequest);
+router.post('/accept-friend-request',postController.AcceptFriendRequest);
+
+router.post('/get-friend-requests-list',postController.getFriendRequestList);
+
+router.post('/search-people',postController.searchPeople);
+
+
 module.exports = router;
 
 

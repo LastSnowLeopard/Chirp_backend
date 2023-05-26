@@ -370,6 +370,8 @@ exports.deleteComments = async (req, res) => {
         res.status(500).send({message:"Reply not deleted Successfully",data:{},status: 0})
     }
 }
+
+
 exports.deleteReplies = async (req, res) => {
     let reply = {
         repley_id: req.body.repley_id,
@@ -391,9 +393,137 @@ exports.deleteReplies = async (req, res) => {
 
 }
 
+// exports.searchNewsFeed = async (req, res) => {
+
+// let search_for=req.body.search_for || ""; //friends --posts --pages -- groups 
+// let filter=req.body.filter || "";
+// let search_word=req.body.search_word || "";
+// let user_id=req.body.user_id || "";
+// const respond = await postService.searchpeople(search_word);
+// }
+
+exports.searchNewsFeed = async (req, res) => {
+    let data={
+        page:req.body.page || 1,
+        pageSize:req.body.pageSize || 10,
+        userId : req.body.userId,
+        requesterId : req.body.requesterId,
+    };
+
+    try {
+        const response = await postService.getPostListServiceNewsFeed(data);
+        response.tagged_user=[];
+
+        if(response.posts.length > 0){
+            for (let i = 0; i < response.posts.length; i++) {
+
+                if(response.posts[i].tagged_user_ids!=null || response.posts[i].tagged_user_ids!=undefined || response.posts[i].tagged_user_ids!=""){
+                       response.posts[i].tagged_user = await postService.getTaggedUsersDataService(response.posts[i].tagged_user_ids);
+                }
+                response.posts[i].media = await postService.getMediaPostService(response.posts[i].post_id);
+
+                response.posts[i].commets = await postService.getMediaPostCommentsandRepliesService(response.posts[i].post_id);
+            }
+        }
+        res.status(200).send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }  
+}
 
 
 
 
+
+
+exports.SendFriendRequest = async (req, res) => {
+    let data = {
+        user_id: req.body.userId,
+        friend_id: req.body.friendId,
+      };
+    
+    
+      try {
+        const respond = await postService.SendFriendRequestService(data);
+        if(respond>"0"){
+    
+            res.status(200).send({message:"Friend Request Sent Successfully",data:{id:respond},status: 1})
+
+        }else{
+            res.status(200).send({message:"Friend Request not Sent Successfully",data:{},status: 0})
+        }
+    
+    }catch(e){
+        res.status(500).send({message:"err",data:{},status: 1})
+    }
+
+}
+
+
+
+exports.AcceptFriendRequest = async (req, res) => {
+    let data = {
+        userId: req.body.userId,
+        friendId: req.body.friendId
+      };
+    
+      try {
+        const respond = await postService.acceptFriendRequestService(data);
+        if(respond>"0"){
+    
+            res.status(200).send({message:"Friend Request Successfully Accepted",data:{data:respond},status: 1})
+
+        }else{
+            res.status(200).send({message:"Friend Request not Successfully Accepted",data:{},status: 0})
+        }
+    
+    }catch(e){
+        res.status(500).send({message:"err",data:{},status: 1})
+    }
+
+}
+
+
+
+
+exports.getFriendRequestList = async (req, res) => {
+    let user_id=req.body.userId;
+
+try {
+    const respond = await postService.getFriendRequestListService(user_id);
+    if(respond.status=="1"){
+
+            res.status(200).send(respond)
+    }else{
+        res.status(200).send(respond)
+    }
+
+}catch(e){
+    console.log(e);
+}
+
+
+}
+
+exports.searchPeople = async (req, res) => {
+    let user_id=req.body.userId;
+    let search=req.body.search;
+
+try {
+    const respond = await postService.searchPeopleService(user_id,search);
+    if(respond.status=="1"){
+
+            res.status(200).send(respond)
+    }else{
+        res.status(200).send(respond)
+    }
+
+}catch(e){
+    console.log(e);
+}
+
+
+}
 
 

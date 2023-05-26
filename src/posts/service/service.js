@@ -163,6 +163,152 @@ exports.getPostListService = async function (data) {
         return err+"System Error";
     }
 };
+exports.getPostListServiceNewsFeed = async function (data) {
+
+    let query=``;
+    if(data.filter == "all"){
+        query=``;
+    }
+
+    try {
+        var sql =  `SELECT 
+        posts.post_id, 
+        posts.total_likes, 
+        posts.user_id,
+        users.full_name, 
+        profiles.profile_image_url, 
+        posts.content, 
+        posts.location, 
+        posts.gif_image_url, 
+        post_backgrounds.id as post_backgroundid,
+        post_backgrounds.background_type,
+        post_backgrounds.color_code,
+        post_backgrounds.image_url as background_image_url,
+        posts.location_lat_lng, 
+        posts.post_type, 
+        posts.tagged_user_ids, 
+        posts.life_event_id, 
+        posts.feeling_id, 
+        posts.event_date, 
+        posts.privacy, 
+        posts.created_at,
+        feelings_list.feelings_name,
+        feelings_list.feelings_icon_url,
+        event_list.event_name,
+        event_list.event_icon_url,
+        CASE 
+          WHEN likes.user_id = ${data.userId} THEN 1 
+          ELSE 0 
+        END AS is_liked
+      FROM posts
+      LEFT JOIN users ON posts.user_id = users.user_id 
+      LEFT JOIN profiles ON posts.user_id = profiles.user_id
+      LEFT JOIN likes ON posts.post_id = likes.post_id 
+      LEFT JOIN post_backgrounds ON posts.background_id = post_backgrounds.id 
+      LEFT JOIN feelings_list ON feelings_list.feelings_id = posts.feeling_id
+      LEFT JOIN event_list ON event_list.event_id = posts.life_event_id  
+      WHERE (posts.user_id = '${data.userId}' OR posts.user_id in (select user_id from friends where status='accepted' AND friend_user_id='${data.userId}' ) OR posts.tagged_user_ids like '%${data.userId}%' ) AND deleted = '0' 
+      order by  posts.post_id desc
+      LIMIT ${data.pageSize} OFFSET ${(data.page - 1) * data.pageSize}
+      `;
+
+        const [fields] = await dbpool.query(sql)
+        console.log(fields);
+
+        if (fields.length >= 0) {
+
+         var sql1 = `SELECT  count(*) FROM posts
+         left join feelings_list on feelings_list.feelings_id=posts.feeling_id
+         left join event_list on event_list.event_id=posts.life_event_id 
+         WHERE posts.user_id='${data.userId}' OR posts.user_id in (select user_id from friends where status='accepted' AND friend_user_id='${data.userId}') AND deleted='0'
+         order by  posts.post_id desc`;
+        const [field] = await dbpool.query(sql1);
+            return {message:"data fetched",posts:fields,total_page:Math.ceil(field[0]['count(*)']/data.pageSize),pageno:data.page,status:1}
+                }
+            else
+        {
+            return  {message:"not data fected",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+exports.searchpeople = async function (keyword) {
+
+    let query=``;
+
+    try {
+        var sql =  `SELECT 
+        posts.post_id, 
+        posts.total_likes, 
+        posts.user_id,
+        users.full_name, 
+        profiles.profile_image_url, 
+        posts.content, 
+        posts.location, 
+        posts.gif_image_url, 
+        post_backgrounds.id as post_backgroundid,
+        post_backgrounds.background_type,
+        post_backgrounds.color_code,
+        post_backgrounds.image_url as background_image_url,
+        posts.location_lat_lng, 
+        posts.post_type, 
+        posts.tagged_user_ids, 
+        posts.life_event_id, 
+        posts.feeling_id, 
+        posts.event_date, 
+        posts.privacy, 
+        posts.created_at,
+        feelings_list.feelings_name,
+        feelings_list.feelings_icon_url,
+        event_list.event_name,
+        event_list.event_icon_url,
+        CASE 
+          WHEN likes.user_id = ${data.userId} THEN 1 
+          ELSE 0 
+        END AS is_liked
+      FROM posts
+      LEFT JOIN users ON posts.user_id = users.user_id 
+      LEFT JOIN profiles ON posts.user_id = profiles.user_id
+      LEFT JOIN likes ON posts.post_id = likes.post_id 
+      LEFT JOIN post_backgrounds ON posts.background_id = post_backgrounds.id 
+      LEFT JOIN feelings_list ON feelings_list.feelings_id = posts.feeling_id
+      LEFT JOIN event_list ON event_list.event_id = posts.life_event_id  
+      WHERE (posts.user_id = '${data.userId}' OR posts.tagged_user_ids like '%${data.userId}%' ) AND deleted = '0' 
+      order by  posts.post_id desc
+      LIMIT ${data.pageSize} OFFSET ${(data.page - 1) * data.pageSize}
+      `;
+
+        const [fields] = await dbpool.query(sql)
+        console.log(fields);
+
+        if (fields.length >= 0) {
+
+         var sql1 = `SELECT  count(*) FROM posts
+         left join feelings_list on feelings_list.feelings_id=posts.feeling_id
+         left join event_list on event_list.event_id=posts.life_event_id     WHERE posts.user_id='${data.userId}' AND deleted='0'
+         order by  posts.post_id desc`;
+        const [field] = await dbpool.query(sql1);
+            return {message:"data fetched",posts:fields,total_page:Math.ceil(field[0]['count(*)']/data.pageSize),pageno:data.page,status:1}
+                }
+            else
+        {
+            return  {message:"not data fected",data:{},status:0 }
+        }       
+    }
+ 
+    catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+};
+
+
+
 
 exports.getPostListServiceForShareableLink = async function (data) {
 
@@ -575,11 +721,27 @@ exports.createCommentService = async function (comment ) {
             console.error(err)
             return err+"System Error";
         }
+    }
 
 
+exports.SendFriendRequestService = async function (data ) {
+    const { user_id,friend_id } = data;
 
+
+    const query = `INSERT INTO friends (user_id, friend_user_id, status) 
+           VALUES ('${friend_id}', '${user_id}', 'pending')`;
+
+    try {
+        console.log(query);
+        const [fields] = await dbpool.query(query);
+
+        console.log(fields.insertId);
+        return fields.insertId;
+    }catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
 }
-
 
 exports.deletepost_service = async function (post_id, user_id ) {
     const deletepost = `delete from posts where post_id='${post_id}' AND user_id='${user_id}'`;
@@ -597,3 +759,85 @@ exports.deletepost_service = async function (post_id, user_id ) {
 
 
 }
+
+
+exports.acceptFriendRequestService = async function (data ) {
+    var query = `update friends set status='accepted' where user_id='${data.userId}' AND friend_user_id='${data.friendId}'`;
+    try {
+        console.log(query);
+        const [fields] = await dbpool.query(query);
+        if(fields.affectedRows>0)
+        {
+            query = `INSERT INTO friends (user_id, friend_user_id, status) 
+            VALUES ('${data.friendId}', '${data.userId}', 'accepted')`;
+
+            console.log(query);
+            const [fields] = await dbpool.query(query);
+            return 1;
+            }
+        else
+        return 0;
+    }catch (err) {
+        console.error(err)
+        return err+"System Error";
+    }
+    
+    }
+
+    
+
+    exports.getFriendRequestListService = async function (user_id) {
+        try {
+            var sql =  `SELECT friends.user_id as userID, friends.friend_user_id as friend_id, users.full_name as friend_name,profiles.profile_image_url as friend_profile_image 
+                        FROM friends
+                        left JOIN users on users.user_id =friends.friend_user_id
+                        left JOIN profiles on profiles.user_id=friends.friend_user_id 
+                        WHERE friends.status="pending" and friends.user_id=${user_id};`;
+    
+            const [fields] = await dbpool.query(sql)
+    
+            if (fields.length >= 0) {
+
+                return fields;
+                    }
+                else
+            {
+                return  fields
+            }       
+        }
+     
+        catch (err) {
+            console.error(err)
+            return err+"System Error";
+        }
+    };
+
+    exports.searchPeopleService = async function (user_id,searchword) {
+        try {
+            var sql =  `SELECT users.user_id as peopleid, users.full_name, profiles.profile_image_url, 
+                        CASE WHEN friends.status IS NULL 
+                        THEN 'not friend' ELSE friends.status
+                        END AS friend_status FROM users JOIN profiles ON users.user_id = profiles.user_id 
+                        LEFT JOIN friends ON friends.friend_user_id = users.user_id AND friends.user_id = '${user_id}' 
+                        WHERE users.full_name LIKE '%${searchword}%' AND (users.user_id <> '${user_id}' OR friends.user_id IS NULL)`;
+    
+            const [fields] = await dbpool.query(sql)
+    
+            if (fields.length >= 0) {
+
+                return fields;
+                    }
+                else
+            {
+                return  fields
+            }       
+        }
+     
+        catch (err) {
+            console.error(err)
+            return err+"System Error";
+        }
+    };
+
+
+    
