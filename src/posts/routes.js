@@ -6,6 +6,15 @@ const saveMediaFiles = require('./../../helper/postmedia');
 const router = express.Router();
 const upload = multer();
 
+const uploadStory= require('../../helper/imageUploader');
+
+// const {auth,verifyOrigin} = require("../../helper/auth")
+
+router.post('/upload-story',uploadStory.fields([{name: 'story_media'},{name: 'thumb_nail_url'}]),postController.uploadStory);
+router.post('/read-stories',postController.readStories)
+
+
+
 router.post('/create-post',  saveMediaFiles.uploadFiles, postController.createPost);
 router.post('/update-post',  saveMediaFiles.uploadFiles, postController.UpdatePost);
 router.post('/get-post-by-id',   postController.getPostById);

@@ -841,3 +841,47 @@ exports.acceptFriendRequestService = async function (data ) {
 
 
     
+    exports.uploadStoryService = async function (data) {
+
+        const { user_id, privacy_level, media_url, text_content, music_url, story_type, background_id,thumb_nail_url } =data;
+        let post_query=`insert into UserStories(user_id, privacy_level,media_url,text_content,music_url,story_type,background_id,thumb_nail_url) 
+        VALUES(${user_id}, '${privacy_level}', '${media_url}','${text_content}', '${music_url}', '${story_type}', '${background_id}','${thumb_nail_url}')`;
+        try {
+            console.log(post_query);
+            const [fields] = await dbpool.query(post_query);
+            
+            console.log(fields.insertId);
+            return fields.insertId;
+                
+        }
+     
+        catch (err) {
+            console.error(err)
+            return err+"System Error";
+        }
+    };
+    
+
+    
+    exports.readstoryService = async function (userid) {
+
+            // `SELECT id, user_id, privacy_level, media_url, text_content, music_url, story_type, thumb_nail_url, background_id 
+            // FROM userstories WHERE user_id IN (SELECT friend_user_id FROM friends WHERE user_id='1') or user_id=1`
+          
+            let query=`SELECT us.id, us.user_id, us.privacy_level, us.media_url, us.text_content, us.music_url, us.story_type, us.thumb_nail_url, us.background_id,
+                        p.profile_image_url, u.full_name
+                        FROM userstories us
+                        JOIN users u ON us.user_id = u.user_id
+                        JOIN profiles p ON u.user_id = p.user_id
+                        WHERE us.user_id IN (SELECT friend_user_id FROM friends WHERE user_id='${userid}') OR us.user_id = '${userid}';`
+                        console.log(query)
+            
+            const [fields] = await dbpool.query(query);
+
+            return fields;
+            
+
+            
+
+
+    }

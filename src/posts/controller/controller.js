@@ -2,6 +2,60 @@ const postService=require('../service/service');
 
 const mail = require('../../../helper/mail')
 
+
+
+
+exports.uploadStory=async(req, res) =>{
+
+    const { user_id, privacy_level, story_media, text_content, music_url, story_type, background_id,thumb_nail_url } = req.body;
+
+    const storyData = {
+    user_id: user_id || "",
+    privacy_level: privacy_level || "",
+    media_url: story_media || "",
+    text_content: text_content || "",
+    music_url: music_url || "",
+    story_type: story_type || "",
+    background_id: background_id|| "",
+    thumb_nail_url:thumb_nail_url || ""
+    };
+
+    try{
+        var result = await postService.uploadStoryService(storyData);
+        if(result>0)
+            res.status(200).send({message:"story Created",data:{story_id:result},status: 1})
+        else
+            res.status(200).send({message:"story not  Created",data:{repley_id:result},status: 0})
+    }catch(e){
+
+    }
+
+}
+
+
+exports.readStories=async(req,res)=>{
+
+let user_id=req.body.user_id;
+try{
+
+    var result = await postService.readstoryService(user_id);
+
+
+    // if(result.length>0){
+        res.status(200).send({message:"data fetched",data:{result},status: 1})
+    // }else{
+        res.status(200).send({message:"data not fetched",data:{result},status: 0})
+    // }
+
+}catch(e){
+
+
+}
+
+
+
+}
+
 exports.createPost = async (req, res) => {
 
   let post_type = req.body.post_type || ""; // life event // normal post //live video // clip
@@ -46,8 +100,6 @@ exports.createPost = async (req, res) => {
         res.status(500).send({message:error,status:0});
     }  
 }
-
-
 
 exports.UpdatePost = async (req, res) => {
 
@@ -97,9 +149,6 @@ exports.UpdatePost = async (req, res) => {
       }  
   }
   
-
-
-
 exports.getPostById = async (req, res) => {
     let data={
         page:req.body.page || 1,
@@ -158,9 +207,6 @@ exports.getPostbyShareableLink = async (req, res) => {
     }  
 }
 
-
-
-
 exports.likePost = async (req, res) => {
     let post_id=req.body.post_id;
     let user_id=req.body.user_id;
@@ -179,7 +225,6 @@ try {
 }
 
 }
-
 
 exports.SharePost = async (req, res) => {
     let postid=req.body.post_id;
@@ -202,12 +247,6 @@ try {
 
 }
 
-
-
-
-
-
-
 exports.deletePost = async (req, res) => {
     let post_id=req.body.post_id;
     let user_id=req.body.user_id;
@@ -227,7 +266,6 @@ try {
 
 }
 
-
 exports.getUsrFriendsByUserid = async (req, res) => {
     let user_id=req.body.userId;
 
@@ -246,10 +284,6 @@ try {
 
 
 }
-
-
-
-
 
 exports.createComments = async (req, res) => {
     

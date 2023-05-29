@@ -30,23 +30,12 @@ const storage = multer.diskStorage({
     if(file.fieldname=='profile_image'){
       req.body.profile_image='uploads/'+file.fieldname + '-' + uniqueSuffix;
     }
-
-    if(file.fieldname=='img1'){
-      req.body.img1='uploads/'+file.fieldname + '-' + uniqueSuffix;
+    if(file.fieldname=='story_media'){
+      req.body.story_media='uploads/'+file.fieldname + '-' + uniqueSuffix;
     }
-    if(file.fieldname=='img2'){
-      req.body.img2='uploads/'+file.fieldname + '-' + uniqueSuffix;
+    if(file.fieldname=='thumb_nail_url'){
+      req.body.thumb_nail_url='uploads/'+file.fieldname + '-' + uniqueSuffix;
     }
-    if(file.fieldname=='img3'){
-      req.body.img3='uploads/'+file.fieldname + '-' + uniqueSuffix;
-    }
-    if(file.fieldname=='img4'){
-      req.body.img4='uploads/'+file.fieldname + '-' + uniqueSuffix;
-    }
-    if(file.fieldname=='img5'){
-      req.body.img5='uploads/'+file.fieldname + '-' + uniqueSuffix;
-    }
-
   }
 })
 
