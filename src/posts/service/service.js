@@ -844,7 +844,7 @@ exports.acceptFriendRequestService = async function (data ) {
     exports.uploadStoryService = async function (data) {
 
         const { user_id, privacy_level, media_url, text_content, music_url, story_type, background_id,thumb_nail_url } =data;
-        let post_query=`insert into UserStories(user_id, privacy_level,media_url,text_content,music_url,story_type,background_id,thumb_nail_url) 
+        let post_query=`insert into userstories(user_id, privacy_level,media_url,text_content,music_url,story_type,background_id,thumb_nail_url) 
         VALUES(${user_id}, '${privacy_level}', '${media_url}','${text_content}', '${music_url}', '${story_type}', '${background_id}','${thumb_nail_url}')`;
         try {
             console.log(post_query);
