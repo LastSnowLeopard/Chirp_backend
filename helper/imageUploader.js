@@ -3,9 +3,15 @@ const multer = require('multer');
 const fileFilter = (req, file, cb,next) => {
   try{
     console.log(file.mimetype)
-  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/gif' || file.mimetype === 'image/webp') {
-      return cb(null, true);
-  } else {
+    if (file.mimetype === 'image/jpeg' ||
+        file.mimetype === 'image/png' ||
+        file.mimetype === 'image/jpg' ||
+        file.mimetype === 'image/gif' ||
+        file.mimetype === 'image/webp' ||
+        file.mimetype.startsWith('audio/') ||
+        file.mimetype.startsWith('video/')) {
+            return cb(null, true);
+} else {
       return cb(null, false,new Error('Invalid file type, only JPEG, JPG, GIF, WEBP and PNG is allowed!'));
   }
 }
