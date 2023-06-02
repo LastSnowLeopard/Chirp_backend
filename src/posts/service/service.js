@@ -850,7 +850,7 @@ exports.acceptFriendRequestService = async function (data ) {
                         FROM notifications n
                         left JOIN users u ON n.notification_from = u.user_id
                         left JOIN profiles p ON u.user_id = p.user_id
-                        WHERE n.notify_to ='${user_id}'`;
+                        WHERE n.notify_to ='${user_id}' order by n.id desc limit 100`;
             console.log(sql)
             const [fields] = await dbpool.query(sql)
     
