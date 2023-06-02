@@ -611,9 +611,12 @@ exports.createCommentService = async function (comment ) {
     try {
         console.log(query);
         const [fields] = await dbpool.query(query);
+
         
-        console.log(fields.insertId);
-        return fields.insertId;
+        const [data] = await dbpool.query(`SELECT user_id FROM posts WHERE post_id=${comment.post_id}`);
+        
+        console.log({"comment_id":fields.insertId, "user_id":data[0].user_id});
+        return {"comment_id":fields.insertId, "user_id":data[0].user_id};
     }catch (err) {
         console.error(err)
         return err+"System Error";
@@ -839,6 +842,33 @@ exports.acceptFriendRequestService = async function (data ) {
         }
     };
 
+
+    exports.readNotificationService = async function (user_id) {
+        try {
+            var sql =  `SELECT n.id, n.notification_text, n.notify_to, n.notificatio_type, n.notification_from, n.created_at, n.is_read,
+                        u.full_name, p.profile_image_url
+                        FROM notifications n
+                        left JOIN users u ON n.notification_from = u.user_id
+                        left JOIN profiles p ON u.user_id = p.user_id
+                        WHERE n.notify_to ='${user_id}'`;
+            console.log(sql)
+            const [fields] = await dbpool.query(sql)
+    
+            if (fields.length >= 0) {
+
+                return fields;
+                    }
+                else
+            {
+                return  fields
+            }       
+        }
+     
+        catch (err) {
+            console.error(err)
+            return err+"System Error";
+        }
+    };
 
     
     exports.uploadStoryService = async function (data) {

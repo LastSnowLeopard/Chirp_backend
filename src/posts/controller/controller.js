@@ -1,6 +1,7 @@
 const postService=require('../service/service');
 
 const mail = require('../../../helper/mail')
+const notification = require('../../../helper/notificationservice')
 
 
 
@@ -85,10 +86,40 @@ exports.createPost = async (req, res) => {
     try {
         var create_post_id = await postService.createPost({user_id,tagged_user,content,feeling,privacy,location,location_lat_lng,life_event_title,post_type,feeling_id,feeling_name,life_event_id,event_date,gif_image_url,background_id});
 
+       
+
+
+
         if ((create_post_id != null || create_post_id != undefined || create_post_id != "" || create_post_id != 0) && (media.length > 0)) {
           let media_query = `INSERT INTO post_media(post_id, media_url, media_type) VALUES ${media.map((m, index) => `( '${create_post_id}', '${m.media_name}', '${m.media_type}')`).join(',')};`;
           create_media_id = await postService.createPostMedia(media_query);
           console.log(media_query);
+        const taggedUsersArray = tagged_user.split(',');
+         let len=taggedUsersArray.length;
+        let msg=``;
+         if (len==1)
+            msg=`'You are tagged in a post by'`;
+         else if (len==2)
+            msg=`'You and and  1 others user is tagged in a post by'`
+         else
+             msg=`'You and and  ${len} others are tagged in a post by'`
+        
+        if(len!=0){
+            const values = taggedUsersArray.map(tagged_user1 => `(${msg}, ${tagged_user1}, 'tagged_post_created', ${user_id}, NOW(), 0)`);
+
+          // Construct the insert statement
+          const insertStatement = `INSERT INTO notifications (notification_text, notify_to, notificatio_type, notification_from, created_at, is_read)
+                                   VALUES ${values.join(', ')}`;
+
+            await notification.createNotification(insertStatement);
+
+            
+        
+        }
+          
+
+
+
           res.status(200).send({message:"Post Created Successfully",post_id:create_post_id,status: 1});
         } else {
           res.status(200).send({message:"Post Created Successfully",post_id:create_post_id,status: 1});
@@ -296,15 +327,22 @@ exports.createComments = async (req, res) => {
 
 try {
     const respond = await postService.createCommentService(comment);
-    if(respond>"1"){
 
-        res.status(200).send({message:"Comment Created Successfully",data:{comment_id:respond},status: 1})
+    if(respond.comment_id>"1"){
+        console.log(respond.comment_id)
+        let sql = `INSERT INTO notifications (notification_text, notify_to, notificatio_type, notification_from, created_at, is_read)
+        VALUES ('You have received a new comment on your post from ', ${respond.user_id}, 'commentadded', ${comment.user_id}, NOW(), 0)`;
+
+        await notification.createNotification(sql);
+
+
+        res.status(200).send({message:"Comment Created Successfully",data:{comment_id:respond.comment_id},status: 1})
     }else{
         res.status(200).send({message:"Comment not Created Successfully",data:{},status: 0})
     }
 
 }catch(e){
-    res.status(500).send({message:"Server Error",data:{},status: 0})
+    res.status(500).send({message:"Server Error",data:e,status: 0})
 }
 }
 
@@ -561,3 +599,22 @@ try {
 }
 
 
+
+exports.readNotification = async (req, res) => {
+    let user_id=req.body.userId;
+
+try {
+    const respond = await postService.readNotificationService(user_id);
+    if(respond.status=="1"){
+
+            res.status(200).send(respond)
+    }else{
+        res.status(200).send(respond)
+    }
+
+}catch(e){
+    console.log(e);
+}
+
+
+}

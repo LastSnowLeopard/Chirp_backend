@@ -13,8 +13,6 @@ const uploadStory= require('../../helper/imageUploader');
 router.post('/upload-story',uploadStory.fields([{name: 'story_media'},{name: 'thumb_nail_url'}]),postController.uploadStory);
 router.post('/read-stories',postController.readStories)
 
-
-
 router.post('/create-post',  saveMediaFiles.uploadFiles, postController.createPost);
 router.post('/update-post',  saveMediaFiles.uploadFiles, postController.UpdatePost);
 router.post('/get-post-by-id',   postController.getPostById);
@@ -39,6 +37,8 @@ router.post('/accept-friend-request',postController.AcceptFriendRequest);
 router.post('/get-friend-requests-list',postController.getFriendRequestList);
 
 router.post('/search-people',postController.searchPeople);
+
+router.post('/read-notification',postController.readNotification);
 
 
 module.exports = router;
