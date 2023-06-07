@@ -79,10 +79,14 @@ exports.addbackgrounds = async (req, res) => {
 // create Post
    
     try {
-        if ((media.length > 0)) {
+        if ((media.length >= 0)) {
+          let media_query='';
+          if(background_type=="image")
+             media_query = `INSERT INTO post_backgrounds(background_type, color_code, image_url) VALUES ${media.map((m, index) => `( '${background_type}', '${color_code}', '${m.media_name}')`).join(',')};`;
+          else
+            media_query = `INSERT INTO post_backgrounds(background_type, color_code, image_url) VALUES ('${background_type}', '${color_code}', '')`;
 
-          let media_query = `INSERT INTO post_backgrounds(background_type, color_code, image_url) VALUES ${media.map((m, index) => `( '${background_type}', '${color_code}', '${m.media_name}')`).join(',')};`;
-         let  create_media_id = await Service.creatbackgroundMedia(media_query);
+            let  create_media_id = await Service.creatbackgroundMedia(media_query);
           res.status(200).send({message:"background Created Successfully",backgroundid:create_media_id,status: 1});
         } else {
           res.status(200).send({message:"background not Created Successfully",backgroundid:create_media_id,status: 1});
