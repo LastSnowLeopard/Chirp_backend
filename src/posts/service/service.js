@@ -904,8 +904,8 @@ exports.acceptFriendRequestService = async function (data ) {
      FROM userstories us
      inner JOIN users u ON us.user_id = u.user_id
      inner JOIN profiles p ON u.user_id = p.user_id
-     inner JOIN fonts f ON us.font_id = f.font_id
-     inner JOIN post_backgrounds pb ON us.font_color_id = pb.id
+     left JOIN fonts f ON us.font_id = f.font_id
+     left JOIN post_backgrounds pb ON us.font_color_id = pb.id
      WHERE us.user_id IN (SELECT friend_user_id FROM friends WHERE user_id = '1') OR us.user_id = '1';`
                         console.log(query)
             
