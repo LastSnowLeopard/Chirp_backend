@@ -872,10 +872,11 @@ exports.acceptFriendRequestService = async function (data ) {
 
     
     exports.uploadStoryService = async function (data) {
-
-        const { user_id, privacy_level, media_url, text_content, music_url, story_type, background_id,thumb_nail_url } =data;
-        let post_query=`insert into userstories(user_id, privacy_level,media_url,text_content,music_url,story_type,background_id,thumb_nail_url) 
-        VALUES(${user_id}, '${privacy_level}', '${media_url}','${text_content}', '${music_url}', '${story_type}', '${background_id}','${thumb_nail_url}')`;
+        
+        
+        const { font_color_id,font_id,user_id, privacy_level, media_url, text_content, music_url, story_type, background_id,thumb_nail_url } =data;
+        let post_query=`insert into userstories(font_color_id,font_id,user_id, privacy_level,media_url,text_content,music_url,story_type,background_id,thumb_nail_url) 
+        VALUES(${font_color_id},${font_id},${user_id}, '${privacy_level}', '${media_url}','${text_content}', '${music_url}', '${story_type}', '${background_id}','${thumb_nail_url}')`;
         try {
             console.log(post_query);
             const [fields] = await dbpool.query(post_query);
@@ -899,11 +900,13 @@ exports.acceptFriendRequestService = async function (data ) {
             // FROM userstories WHERE user_id IN (SELECT friend_user_id FROM friends WHERE user_id='1') or user_id=1`
           
             let query=`SELECT us.id, us.user_id, us.privacy_level, us.media_url, us.text_content, us.music_url, us.story_type, us.thumb_nail_url, us.background_id,
-                        p.profile_image_url, u.full_name
-                        FROM userstories us
-                        JOIN users u ON us.user_id = u.user_id
-                        JOIN profiles p ON u.user_id = p.user_id
-                        WHERE us.user_id IN (SELECT friend_user_id FROM friends WHERE user_id='${userid}') OR us.user_id = '${userid}';`
+            p.profile_image_url, u.full_name, f.font_id, f.font_name, pb.image_url as image_url, pb.color_code as font_color
+     FROM userstories us
+     inner JOIN users u ON us.user_id = u.user_id
+     inner JOIN profiles p ON u.user_id = p.user_id
+     inner JOIN fonts f ON us.font_id = f.font_id
+     inner JOIN post_backgrounds pb ON us.font_color_id = pb.id
+     WHERE us.user_id IN (SELECT friend_user_id FROM friends WHERE user_id = '1') OR us.user_id = '1';`
                         console.log(query)
             
             const [fields] = await dbpool.query(query);

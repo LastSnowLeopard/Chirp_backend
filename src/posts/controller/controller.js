@@ -8,7 +8,19 @@ const notification = require('../../../helper/notificationservice')
 
 exports.uploadStory=async(req, res) =>{
 
-    const { user_id, privacy_level, story_media, text_content, music_url, story_type, background_id,thumb_nail_url } = req.body;
+
+
+    const { user_id, privacy_level, story_media, text_content, music_url, story_type, background_id,thumb_nail_url,font_id,font_color_id } = req.body;
+
+    // if(story_type=="text"){
+    //     // background_id
+    //     // music_url
+    //     // font_id
+    //     // font_color_id
+
+    // }else if(story_type=="image/video"){
+
+    // }
 
     const storyData = {
     user_id: user_id || "",
@@ -18,7 +30,10 @@ exports.uploadStory=async(req, res) =>{
     music_url: music_url || "",
     story_type: story_type || "",
     background_id: background_id|| "",
-    thumb_nail_url:thumb_nail_url || ""
+    thumb_nail_url:thumb_nail_url || "",
+    font_id:font_id ||"",
+    font_color_id:font_color_id || ""
+    
     };
 
     try{

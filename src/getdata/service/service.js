@@ -57,6 +57,26 @@ exports.getHobbyListService = async () => {
 }
 
 
+exports.getFontList = async () => {
+  try {
+    var sql1 = `select * from fonts where active=true`;
+    const [data] = await dbpool.query(sql1);  
+    if(data.length>0){
+      return {message:"Font List Found",data:data,status:1}
+    }else{
+      return {message:"",data:{user_id:""},status:0}
+    }
+
+} catch (error) {
+  throw error;
+}
+
+
+}
+
+
+
+
 exports.getEventListService = async () => {
   try {
     var sql1 = `select * from event_list`;

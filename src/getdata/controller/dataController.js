@@ -27,6 +27,20 @@ exports.getHobbyList = async (req, res) => {
   }
 }
 
+exports.getHobbyList = async (req, res) => {
+  try {
+    const result = await Service.getFontList();
+
+    res.status(200).send(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+}
+
+
+
+
 
 exports.getEventList = async (req, res) => {
   try {
