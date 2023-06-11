@@ -876,7 +876,7 @@ exports.acceptFriendRequestService = async function (data ) {
         
         const { font_color_id,font_id,user_id, privacy_level, media_url, text_content, music_url, story_type, background_id,thumb_nail_url } =data;
         let post_query=`insert into userstories(font_color_id,font_id,user_id, privacy_level,media_url,text_content,music_url,story_type,background_id,thumb_nail_url) 
-        VALUES(${font_color_id},${font_id},${user_id}, '${privacy_level}', '${media_url}','${text_content}', '${music_url}', '${story_type}', '${background_id}','${thumb_nail_url}')`;
+        VALUES('${font_color_id}','${font_id}',${user_id}, '${privacy_level}', '${media_url}','${text_content}', '${music_url}', '${story_type}', '${background_id}','${thumb_nail_url}')`;
         try {
             console.log(post_query);
             const [fields] = await dbpool.query(post_query);
