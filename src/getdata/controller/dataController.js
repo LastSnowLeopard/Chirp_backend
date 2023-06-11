@@ -27,7 +27,7 @@ exports.getHobbyList = async (req, res) => {
   }
 }
 
-exports.getHobbyList = async (req, res) => {
+exports.getFontList = async (req, res) => {
   try {
     const result = await Service.getFontList();
 
