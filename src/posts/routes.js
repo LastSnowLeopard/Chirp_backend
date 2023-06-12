@@ -12,6 +12,8 @@ const uploadStory= require('../../helper/imageUploader');
 
 router.post('/upload-story',uploadStory.fields([{name: 'story_media'},{name: 'thumb_nail_url'}]),postController.uploadStory);
 router.post('/read-stories',postController.readStories)
+router.post('/delete-story',postController.deleteStory);
+
 
 router.post('/create-post',  saveMediaFiles.uploadFiles, postController.createPost);
 router.post('/update-post',  saveMediaFiles.uploadFiles, postController.UpdatePost);

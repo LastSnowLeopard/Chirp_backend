@@ -672,7 +672,27 @@ exports.createCommentService = async function (comment ) {
             return err+"System Error";
         }
         
+    }
+
+    exports.deletestoryService = async function (story ) {
+
+        const query = `Delete FROM userstories WHERE user_id='${story.userId}' AND id='${story.storyId}'`;
+        try {
+            console.log(query);
+            const [fields] = await dbpool.query(query);
+            if(fields.affectedRows>0)
+            return 1;
+            else
+            return 0;
+        }catch (err) {
+            console.error(err)
+            return err+"System Error";
         }
+        
+        }
+
+
+        
     exports.deleteRepliesService = async function (comment ) {
 
         const query = `delete from comment_replies where repley_id='${comment.repley_id}'`;

@@ -459,6 +459,30 @@ exports.deleteComments = async (req, res) => {
 }
 
 
+
+exports.deleteStory = async (req, res) => {
+    let data = {
+        userId: req.body.userId,
+        storyId: req.body.storyId,
+
+      };
+    
+      try {
+        const respond = await postService.deletestoryService(data);
+        if(respond>"0"){
+    
+            res.status(200).send({message:"Story deleted Successfully",data:{},status: 1})
+
+        }else{
+            res.status(200).send({message:"Story not deleted Successfully",data:{},status: 0})
+        }
+    
+    }catch(e){
+        res.status(500).send({message:"Story not deleted Successfully",data:{},status: 0})
+    }
+}
+
+
 exports.deleteReplies = async (req, res) => {
     let reply = {
         repley_id: req.body.repley_id,
