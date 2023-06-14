@@ -926,7 +926,8 @@ exports.acceptFriendRequestService = async function (data ) {
      left JOIN profiles p ON u.user_id = p.user_id
      left JOIN fonts f ON us.font_id = f.font_id
      left JOIN post_backgrounds pb ON us.font_color_id = pb.id
-     WHERE us.user_id IN (SELECT friend_user_id FROM friends WHERE user_id = '${userid}') OR us.user_id = '${userid}';`
+     WHERE us.user_id IN (SELECT friend_user_id FROM friends WHERE user_id = '${userid}') OR us.user_id = '${userid}'
+     order by us.id desc;`
                         console.log(query)
             
             const [fields] = await dbpool.query(query);
