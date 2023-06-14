@@ -41,7 +41,7 @@ exports.uploadStory=async(req, res) =>{
         if(result>0)
             res.status(200).send({message:"story Created",data:{story_id:result},status: 1})
         else
-            res.status(200).send({message:"story not  Created",data:{repley_id:result},status: 0})
+            res.status(200).send({message:"story not  Created",data:{story_id:result},status: 0})
     }catch(e){
 
     }

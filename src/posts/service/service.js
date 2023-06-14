@@ -922,10 +922,10 @@ exports.acceptFriendRequestService = async function (data ) {
             let query=`SELECT us.id, us.user_id, us.privacy_level, us.media_url, us.text_content, us.music_url, us.story_type, us.thumb_nail_url, us.background_id,
             p.profile_image_url, u.full_name, f.font_id, f.font_name, pb.image_url as image_url, pb.color_code as font_color
      FROM userstories us
-     inner JOIN users u ON us.user_id = u.user_id
-     inner JOIN profiles p ON u.user_id = p.user_id
+     left JOIN users u ON us.user_id = u.user_id
+     left JOIN profiles p ON u.user_id = p.user_id
      left JOIN fonts f ON us.font_id = f.font_id
-     inner JOIN post_backgrounds pb ON us.font_color_id = pb.id
+     left JOIN post_backgrounds pb ON us.font_color_id = pb.id
      WHERE us.user_id IN (SELECT friend_user_id FROM friends WHERE user_id = '${userid}') OR us.user_id = '${userid}';`
                         console.log(query)
             
