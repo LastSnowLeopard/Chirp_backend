@@ -14,8 +14,10 @@ exports.insertUpdateProfileImage = async (req, res) => {
     
     try {
         const respond = await profileService.createUpdateService(data);
-    
-        res.status(200).send({ respond})     
+        console.log("1")
+        const response = await profileService.getProfileImgURl(data);
+        console.log("2")
+        res.status(200).send({ response})     
     } catch (error) {
         console.log(error)
         res.status(500).send({message:error.message});

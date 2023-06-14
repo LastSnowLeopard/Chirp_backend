@@ -33,6 +33,30 @@ exports.createUpdateService = async function (data) {
 };
 
 
+
+
+
+exports.getProfileImgURl = async function (data) {
+    try {
+        const [rows] = await dbpool.query(
+            `SELECT profile_image_url FROM profiles WHERE user_id='${data.userId}' AND profile_id='${data.profileId}'`
+        );
+        
+        if (rows.length > 0) {
+
+            return {message:"Profile Image updated Successfully",data:{profile_image_url:rows[0]['profile_image_url']},status:1}
+
+        } else {
+            return {message:"Profile Image not updated Successfully",data:{},status:0}
+
+        }
+    } catch (error) {
+        console.error(error);
+        throw new Error("System error");
+    }
+};
+
+
 exports.deleteProfileImageService = async function (userId, profileId) {
     let query = `UPDATE profiles SET profile_image_url = null WHERE user_id = ${userId} AND profile_id = ${profileId}`;
   
