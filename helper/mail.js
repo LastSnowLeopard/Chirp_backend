@@ -18,13 +18,13 @@ module.exports.sendMail= async function sendMail(msg,email) {
     port: 465,
     secure: true,
     auth: {
-      user: 'Noreply@chirp.one',
-      pass: 'chirpsocial28' 
+      user: 'noreply@chirp.one',
+      pass: 'chirpsocial28'  
     }
   });
 
   var mailOptions = {
-    from: 'Noreply@chirp.one',
+    from: 'noreply@chirp.one',
     to: [emailAdress],
 
     subject: 'Reset your Password',
