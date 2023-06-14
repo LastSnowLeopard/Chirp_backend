@@ -1,5 +1,10 @@
 ssh -i chrip.pem ubuntu@13.50.151.52
 
+
+
+token
+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
+
 chrisp
 
 
@@ -8,5 +13,46 @@ CREATE USER 'super1'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Super
 super1
 Super1@123456
 
-token
-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
+
+sudo mysql -u super1 -p
+
+
+
+
+[3:24 pm, 03/04/2023] Nomi Techsyn: https://aws.amazon.com/
+[3:24 pm, 03/04/2023] Nomi Techsyn: jkmiller0272@gmail.com
+[3:24 pm, 03/04/2023] Nomi Techsyn: Chirpsocial28!
+
+[3:25 pm, 03/04/2023] Nomi Techsyn: https://www.namecheap.com/myaccount/login/
+[3:25 pm, 03/04/2023] Nomi Techsyn: thefreestyleradio
+[3:25 pm, 03/04/2023] Nomi Techsyn: chirpsocial28
+[3:25 pm, 03/04/2023] Nomi Techsyn: in namecheap use the chirp.one domain on my account and push it to the server
+
+
+ALTER TABLE `users` ADD `reset_link` VARCHAR(200) NULL DEFAULT NULL AFTER `email`;
+ALTER TABLE `users` ADD `link_generation_time` VARCHAR(40) NULL DEFAULT NULL AFTER `reset_link`;
+
+
+
+Mailbox 
+id Password
+
+
+@	MX	10	mx1.privateemail.com
+@	MX	10	mx2.privateemail.com
+@	TXT		v=spf1 include:spf.privateemail.com ~all
+
+
+Noreply@chirp.one
+chirpsocial28
+
+
+
+google map apis
+thefreestyleradio@gmail.com
+chirpsocial28
+
+
+
+
+AIzaSyBs1PwgporJKABPGMbInlSiA6FKyDEEQJI
